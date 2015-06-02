@@ -96,14 +96,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
 
     void addItem(AlarmInfo alarmInfo) {
         alarmInfoList.add(alarmInfo);
-        //setAlarm(alarmInfo);
         AlarmUtils.setAlarm(alarmInfo, context);
         notifyDataSetChanged();
     }
-
-
-
-
+    
     public static class AlarmViewHolder extends RecyclerView.ViewHolder {
         protected TextView timeView;
         protected Switch toggle;

@@ -77,6 +77,7 @@ public class AlarmActivity extends AppCompatActivity {
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (maxVolume * 0.75), 0);
 
         ringtone.play();
+
         if (vibrator.hasVibrator()) {
             vibrator.vibrate(new long[]{0, 1000, 1000, 1000}, 2);
         }

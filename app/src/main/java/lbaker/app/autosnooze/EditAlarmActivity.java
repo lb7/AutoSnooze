@@ -19,9 +19,9 @@ import lbaker.app.autosnooze.util.AlarmUtils;
 
 public class EditAlarmActivity extends AppCompatActivity {
 
-    private int mHour;
-    private int mMinute;
-    private int mId;
+    private int hour;
+    private int minute;
+    private int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +39,14 @@ public class EditAlarmActivity extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-        mHour = intent.getIntExtra("hour", 0);
-        mMinute = intent.getIntExtra("minute", 0);
-        mId = intent.getIntExtra("id", 0);
+        hour = intent.getIntExtra("hour", 0);
+        minute = intent.getIntExtra("minute", 0);
+        id = intent.getIntExtra("id", 0);
 
         TextView timeView = (TextView) findViewById(R.id.text_alarm);
         //This AlarmInfo is used for printing purposes only.
         //Not persisted in any way.
-        timeView.setText(AlarmUtils.printAlarm(new AlarmInfo(mHour, mMinute)));
+        timeView.setText(AlarmUtils.printAlarm(new AlarmInfo(hour, minute)));
 
         Button saveButton = (Button) findViewById(R.id.button_save);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -88,16 +88,11 @@ public class EditAlarmActivity extends AppCompatActivity {
         for (int idx = 0; idx < buttonContainer.getChildCount(); idx++) {
             ToggleButton toggleButton = (ToggleButton) buttonContainer.getChildAt(idx);
             days[idx] = (byte) (toggleButton.isChecked() ? 1 : 0);
-            /*if (toggleButton.isActivated()) {
-                days[idx] = 1;
-            } else {
-                days[idx] = 0;
-            }*/
         }
 
-        result.putExtra("hour", mHour)
-                .putExtra("minute", mMinute)
-                .putExtra("id", mId)
+        result.putExtra("hour", hour)
+                .putExtra("minute", minute)
+                .putExtra("id", id)
                 .putExtra("days", days);
 
         setResult(RESULT_OK, result);

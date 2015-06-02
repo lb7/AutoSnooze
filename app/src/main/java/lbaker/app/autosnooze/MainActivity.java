@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int NEW_ALARM_REQUEST_CODE = 1;
 
     private Realm realm;
-    private RecyclerAdapter mRecyclerAdapter;
+    private RecyclerAdapter recyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +50,9 @@ public class MainActivity extends AppCompatActivity {
 
         List<AlarmInfo> alarmList = new ArrayList<>(results);
 
-        mRecyclerAdapter = new RecyclerAdapter(alarmList, realm, this);
+        recyclerAdapter = new RecyclerAdapter(alarmList, realm, this);
         recyclerView.addItemDecoration(new AlarmListItemDecoration(getResources()));
-        recyclerView.setAdapter(mRecyclerAdapter);
+        recyclerView.setAdapter(recyclerAdapter);
 
         setSupportActionBar(toolbar);
         ViewCompat.setElevation(toolbar, 10);
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
                     realm.commitTransaction();
 
-                    mRecyclerAdapter.addItem(alarmInfo);
+                    recyclerAdapter.addItem(alarmInfo);
                 }
                 break;
             default:

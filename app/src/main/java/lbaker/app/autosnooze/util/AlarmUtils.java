@@ -15,14 +15,8 @@ public class AlarmUtils {
 
     public static final int NUM_DAYS_WEEK = 7;
 
-    //todo: Add case for < API 21
     public static void setAlarm(AlarmInfo alarmInfo, Context context) {
         int id = alarmInfo.getId();
-
-        /*if (current.getTimeInMillis() < System.currentTimeMillis()) {
-            //current.add(Calendar.DATE, 1);
-
-        }*/
 
         long alarmTime = AlarmUtils.findNextAlarmTime(alarmInfo);
 
@@ -41,6 +35,10 @@ public class AlarmUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(alarmTime, pendingIntent);
             alarmManager.setAlarmClock(info, pendingIntent);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
+        } else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
         }
     }
 
@@ -75,11 +73,8 @@ public class AlarmUtils {
                     break;
                 }
             }
-
             alarmTime.add(Calendar.DATE, 1);
-
         }
-
         return alarmTime.getTimeInMillis();
     }
 
