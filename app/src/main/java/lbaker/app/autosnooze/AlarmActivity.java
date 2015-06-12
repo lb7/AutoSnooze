@@ -12,6 +12,7 @@ import android.os.PowerManager;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -102,7 +103,6 @@ public class AlarmActivity extends AppCompatActivity {
                 .equalTo("id", id)
                 .findAll()
                 .first();
-        //Debug.waitForDebugger();
 
         AlarmUtils.setAlarm(alarmInfo, getApplicationContext());
 
@@ -110,6 +110,16 @@ public class AlarmActivity extends AppCompatActivity {
         ringtone.stop();
         vibrator.cancel();
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //Destroys activity on back button press. The user doesn't need to
+        //return to the AlarmActivity.
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

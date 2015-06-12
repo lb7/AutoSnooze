@@ -4,12 +4,14 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Build;
 
 import java.util.Calendar;
 
 import lbaker.app.autosnooze.AlarmActivity;
 import lbaker.app.autosnooze.AlarmInfo;
+import lbaker.app.autosnooze.R;
 
 public class AlarmUtils {
 
@@ -120,5 +122,88 @@ public class AlarmUtils {
 
     public static String printAlarm(AlarmInfo alarmInfo) {
         return AlarmUtils.printAlarm(alarmInfo.getHour(), alarmInfo.getMinute());
+    }
+
+    public static String printDays(AlarmInfo alarmInfo, Resources resources) {
+        StringBuilder stringBuilder = new StringBuilder();
+        byte[] days = alarmInfo.getDays();
+        int lastDay = 0;
+
+        for (int idx = 0; idx < days.length; idx++) {
+            if (days[idx] == 1) {
+                stringBuilder.append(AlarmUtils.getDayText(idx + 1, resources, false))
+                        .append(", ");
+                lastDay = idx + 1;
+            }
+        }
+
+        if (stringBuilder.length() == 5) { //There is only one day so use full day text
+            stringBuilder.delete(0, stringBuilder.length());
+            stringBuilder.append(AlarmUtils.getDayText(lastDay, resources, true));
+        } else if (stringBuilder.length() > 0) {
+            stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+        } else {
+            stringBuilder.append(resources.getString(R.string.no_repeat));
+        }
+
+        return stringBuilder.toString();
+    }
+
+    private static String getDayText(int day, Resources resources, boolean fullText) {
+        int dayString = 0;
+        if (fullText) {
+            switch (day) {
+                case Calendar.SUNDAY:
+                    dayString = R.string.day_sun_full;
+                    break;
+                case Calendar.MONDAY:
+                    dayString = R.string.day_mon_full;
+                    break;
+                case Calendar.TUESDAY:
+                    dayString = R.string.day_tue_full;
+                    break;
+                case Calendar.WEDNESDAY:
+                    dayString = R.string.day_wed_full;
+                    break;
+                case Calendar.THURSDAY:
+                    dayString = R.string.day_thu_full;
+                    break;
+                case Calendar.FRIDAY:
+                    dayString = R.string.day_fri_full;
+                    break;
+                case Calendar.SATURDAY:
+                    dayString = R.string.day_sat_full;
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            switch (day) {
+                case Calendar.SUNDAY:
+                    dayString = R.string.day_sun;
+                    break;
+                case Calendar.MONDAY:
+                    dayString = R.string.day_mon;
+                    break;
+                case Calendar.TUESDAY:
+                    dayString = R.string.day_tue;
+                    break;
+                case Calendar.WEDNESDAY:
+                    dayString = R.string.day_wed;
+                    break;
+                case Calendar.THURSDAY:
+                    dayString = R.string.day_thu;
+                    break;
+                case Calendar.FRIDAY:
+                    dayString = R.string.day_fri;
+                    break;
+                case Calendar.SATURDAY:
+                    dayString = R.string.day_sat;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return resources.getString(dayString);
     }
 }

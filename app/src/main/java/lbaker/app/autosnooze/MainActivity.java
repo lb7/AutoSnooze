@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         List<AlarmInfo> alarmList = new ArrayList<>(results);
 
-        recyclerAdapter = new RecyclerAdapter(alarmList, realm, this);
+        recyclerAdapter = new RecyclerAdapter(alarmList, realm, getApplicationContext());
         recyclerView.addItemDecoration(new AlarmListItemDecoration(getResources()));
         recyclerView.setAdapter(recyclerAdapter);
 

@@ -46,6 +46,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
     public void onBindViewHolder(AlarmViewHolder alarmViewHolder, final int i) {
         final AlarmInfo alarmInfo = alarmInfoList.get(i);
         alarmViewHolder.timeView.setText(AlarmUtils.printAlarm(alarmInfo));
+        alarmViewHolder.daysView.setText(AlarmUtils.printDays(alarmInfo, context.getResources()));
 
         alarmViewHolder.toggle.setChecked(alarmInfo.isEnabled());
         alarmViewHolder.toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -99,15 +100,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
         AlarmUtils.setAlarm(alarmInfo, context);
         notifyDataSetChanged();
     }
-    
+
     public static class AlarmViewHolder extends RecyclerView.ViewHolder {
         protected TextView timeView;
+        protected TextView daysView;
         protected Switch toggle;
         protected ImageButton delete;
 
         public AlarmViewHolder(View v) {
             super(v);
             timeView = (TextView) v.findViewById(R.id.text_time);
+            daysView = (TextView) v.findViewById(R.id.text_days);
             toggle = (Switch) v.findViewById(R.id.toggle);
             delete = (ImageButton) v.findViewById(R.id.button_delete);
         }
