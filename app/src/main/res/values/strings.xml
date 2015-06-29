@@ -34,7 +34,8 @@
     <string name="day_sat">Sat</string>
     <string name="day_sat_full">Saturday</string>
 
-    <string name="no_repeat">No repeat</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="today">Today</string>
 
     <string name="alarm_msg">Wake Up!</string>
 </resources>

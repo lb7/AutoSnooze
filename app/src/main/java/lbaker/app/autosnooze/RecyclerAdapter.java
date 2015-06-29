@@ -55,7 +55,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
                 realm.beginTransaction();
 
                 alarmInfo.setEnabled(isChecked);
-                realm.copyToRealm(alarmInfo);
+                //realm.copyToRealm(alarmInfo);
 
                 realm.commitTransaction();
 

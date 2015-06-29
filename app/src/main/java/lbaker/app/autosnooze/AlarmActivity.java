@@ -104,7 +104,13 @@ public class AlarmActivity extends AppCompatActivity {
                 .findAll()
                 .first();
 
-        AlarmUtils.setAlarm(alarmInfo, getApplicationContext());
+        if (alarmInfo.isRepeat()) {
+            AlarmUtils.setAlarm(alarmInfo, getApplicationContext());
+        } else {
+            realm.beginTransaction();
+            alarmInfo.setEnabled(false);
+            realm.commitTransaction();
+        }
 
         realm.close();
         ringtone.stop();

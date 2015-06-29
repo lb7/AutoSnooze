@@ -116,10 +116,10 @@ public class MainActivity extends AppCompatActivity {
                     alarmInfo.setMinute(data.getIntExtra("minute", 0));
                     alarmInfo.setId(data.getIntExtra("id", 0));
                     alarmInfo.setDays(data.getByteArrayExtra("days"));
+                    alarmInfo.setRepeat(data.getBooleanExtra("repeat", false));
                     alarmInfo.setEnabled(true);
 
                     realm.commitTransaction();
-
                     recyclerAdapter.addItem(alarmInfo);
                 }
                 break;

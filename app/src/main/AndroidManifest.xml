@@ -24,7 +24,8 @@
         <activity
             android:name=".AlarmActivity"
             android:label="@string/title_activity_alarm"
-            android:showOnLockScreen="true" >
+            android:showOnLockScreen="true"
+            android:excludeFromRecents="true">
         </activity>
 
         <receiver android:name=".AlarmBootReceiver" >

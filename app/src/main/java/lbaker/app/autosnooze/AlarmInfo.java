@@ -11,6 +11,7 @@ public class AlarmInfo extends RealmObject {
     private int minute;
     private int id;
     private boolean isEnabled;
+    private boolean repeat;
 
     private byte[] days;
 
@@ -54,6 +55,14 @@ public class AlarmInfo extends RealmObject {
 
     public void setEnabled(boolean isEnabled) {
         this.isEnabled = isEnabled;
+    }
+
+    public boolean isRepeat() {
+        return repeat;
+    }
+
+    public void setRepeat(boolean repeat) {
+        this.repeat = repeat;
     }
 
     public byte[] getDays() {

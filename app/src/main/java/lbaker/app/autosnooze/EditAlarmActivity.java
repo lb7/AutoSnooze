@@ -44,6 +44,7 @@ public class EditAlarmActivity extends AppCompatActivity {
         id = intent.getIntExtra("id", 0);
 
         TextView timeView = (TextView) findViewById(R.id.text_alarm);
+
         //This AlarmInfo is used for printing purposes only.
         //Not persisted in any way.
         timeView.setText(AlarmUtils.printAlarm(new AlarmInfo(hour, minute)));
@@ -82,18 +83,24 @@ public class EditAlarmActivity extends AppCompatActivity {
     public void saveChanges() {
         Intent result = new Intent();
 
+        boolean repeat = false;
         byte[] days = new byte[AlarmUtils.NUM_DAYS_WEEK];
         ViewGroup buttonContainer = (ViewGroup) findViewById(R.id.container_day);
 
         for (int idx = 0; idx < buttonContainer.getChildCount(); idx++) {
             ToggleButton toggleButton = (ToggleButton) buttonContainer.getChildAt(idx);
             days[idx] = (byte) (toggleButton.isChecked() ? 1 : 0);
+            if (toggleButton.isChecked()) {
+                days[idx] = 1;
+                repeat = true;
+            }
         }
 
         result.putExtra("hour", hour)
                 .putExtra("minute", minute)
                 .putExtra("id", id)
-                .putExtra("days", days);
+                .putExtra("days", days)
+                .putExtra("repeat", repeat);
 
         setResult(RESULT_OK, result);
         finish();
