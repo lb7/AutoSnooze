@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,8 +47,6 @@ public class AlarmActivity extends AppCompatActivity {
                 | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         if (wakeLock != null && !wakeLock.isHeld()) wakeLock.acquire();
-
-        Log.d(LOG_TAG, "Alarm Triggered!");
     }
 
     @Override

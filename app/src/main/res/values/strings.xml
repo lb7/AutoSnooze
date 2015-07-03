@@ -11,6 +11,9 @@
     <string name="action_test_alarm">Set Test Alarm</string>
     <string name="action_cancel_alarm">Cancel Test Alarm</string>
     <string name="title_activity_new_alarm">Edit Alarm</string>
+    
+    <string name="hint_snooze_duration">Snooze duration</string>
+    <string name="hint_snooze_quantity">Snooze quantity</string>
 
     <!--Constants used when printing the days an alarm is active-->
     <string name="day_sun">Sun</string>

@@ -4,85 +4,120 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="lbaker.app.autosnooze.EditAlarmActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:longClickable="false"
+    android:focusableInTouchMode="true">
 
-    <include layout="@layout/toolbar"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/text_alarm"
-        android:textSize="40sp"
-        android:textColor="@android:color/black" />
-
-    <LinearLayout
-        android:orientation="horizontal"
+    <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/container_day"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp">
+        layout="@layout/toolbar" />
 
-        <ToggleButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOn="@string/day_sun"
-            android:textOff="@string/day_sun"
-            android:id="@+id/toggle_button_sun"
-            android:layout_weight="1" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
-        <ToggleButton
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textOn="@string/day_mon"
-            android:textOff="@string/day_mon"
-            android:id="@+id/toggle_button_mon"
-            android:layout_weight="1"
-            android:ellipsize="none"
-            android:singleLine="true" />
-        <ToggleButton
+            android:id="@+id/text_alarm"
+            android:textSize="40sp"
+            android:textColor="@android:color/black" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/container_day"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOn="@string/day_sun"
+                android:textOff="@string/day_sun"
+                android:id="@+id/toggle_button_sun"
+                android:layout_weight="1" />
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOn="@string/day_mon"
+                android:textOff="@string/day_mon"
+                android:id="@+id/toggle_button_mon"
+                android:layout_weight="1"
+                android:ellipsize="none"
+                android:singleLine="true" />
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOn="@string/day_tue"
+                android:textOff="@string/day_tue"
+                android:id="@+id/toggle_button_tues"
+                android:layout_weight="1" />
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOn="@string/day_wed"
+                android:textOff="@string/day_wed"
+                android:id="@+id/toggle_button_wed"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:ellipsize="none" />
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOn="@string/day_thu"
+                android:textOff="@string/day_thu"
+                android:id="@+id/toggle_button_thurs"
+                android:layout_weight="1" />
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOn="@string/day_fri"
+                android:textOff="@string/day_fri"
+                android:id="@+id/toggle_button_fri"
+                android:layout_weight="1" />
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOn="@string/day_sat"
+                android:textOff="@string/day_sat"
+                android:id="@+id/toggle_button_sat"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:id="@+id/text_snooze_duration"
+                android:hint="@string/hint_snooze_duration"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:id="@+id/text_snooze_quantity"
+                android:hint="@string/hint_snooze_quantity"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textOn="@string/day_tue"
-            android:textOff="@string/day_tue"
-            android:id="@+id/toggle_button_tues"
-            android:layout_weight="1" />
-        <ToggleButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOn="@string/day_wed"
-            android:textOff="@string/day_wed"
-            android:id="@+id/toggle_button_wed"
-            android:layout_weight="1"
-            android:singleLine="true"
-            android:ellipsize="none" />
-        <ToggleButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOn="@string/day_thu"
-            android:textOff="@string/day_thu"
-            android:id="@+id/toggle_button_thurs"
-            android:layout_weight="1" />
-        <ToggleButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOn="@string/day_fri"
-            android:textOff="@string/day_fri"
-            android:id="@+id/toggle_button_fri"
-            android:layout_weight="1" />
-        <ToggleButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOn="@string/day_sat"
-            android:textOff="@string/day_sat"
-            android:id="@+id/toggle_button_sat"
-            android:layout_weight="1" />
+            android:text="Save Changes"
+            android:id="@+id/button_save" />
     </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save Changes"
-        android:id="@+id/button_save" />
 
 </LinearLayout>

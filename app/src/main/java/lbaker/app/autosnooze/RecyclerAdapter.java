@@ -13,9 +13,13 @@ import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import io.realm.Realm;
+import io.realm.RealmResults;
 import lbaker.app.autosnooze.util.AlarmUtils;
 
 /**
@@ -48,15 +52,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
         alarmViewHolder.timeView.setText(AlarmUtils.printAlarm(alarmInfo));
         alarmViewHolder.daysView.setText(AlarmUtils.printDays(alarmInfo, context.getResources()));
 
-        alarmViewHolder.toggle.setChecked(alarmInfo.isEnabled());
         alarmViewHolder.toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 realm.beginTransaction();
-
                 alarmInfo.setEnabled(isChecked);
-                //realm.copyToRealm(alarmInfo);
-
                 realm.commitTransaction();
 
                 if (isChecked) {
@@ -66,6 +66,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
                 }
             }
         });
+        alarmViewHolder.toggle.setChecked(alarmInfo.isEnabled());
 
         alarmViewHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +89,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
                 notifyDataSetChanged();
             }
         });
+
+        /*alarmViewHolder.container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.expand);
+                set.setTarget(v);
+                set.start();
+            }
+        });*/
     }
 
     @Override
@@ -101,18 +111,23 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
         notifyDataSetChanged();
     }
 
+    void refresh() {
+        RealmResults<AlarmInfo> results = realm.allObjectsSorted(AlarmInfo.class, "hour", true, "minute", true);
+
+        alarmInfoList = new ArrayList<>(results);
+        notifyDataSetChanged();
+    }
+
     public static class AlarmViewHolder extends RecyclerView.ViewHolder {
-        protected TextView timeView;
-        protected TextView daysView;
-        protected Switch toggle;
-        protected ImageButton delete;
+        @Bind(R.id.text_time)     protected TextView timeView;
+        @Bind(R.id.text_days)     protected TextView daysView;
+        @Bind(R.id.toggle)        protected Switch toggle;
+        @Bind(R.id.button_delete) protected ImageButton delete;
+        @Bind(R.id.container)     protected View container;
 
         public AlarmViewHolder(View v) {
             super(v);
-            timeView = (TextView) v.findViewById(R.id.text_time);
-            daysView = (TextView) v.findViewById(R.id.text_days);
-            toggle = (Switch) v.findViewById(R.id.toggle);
-            delete = (ImageButton) v.findViewById(R.id.button_delete);
+            ButterKnife.bind(this, v);
         }
     }
 }

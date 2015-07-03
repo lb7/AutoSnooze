@@ -1,10 +1,6 @@
 package lbaker.app.autosnooze;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewCompat;
@@ -66,6 +62,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        recyclerAdapter.refresh();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         realm.close();
@@ -86,15 +88,6 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.action_new:
-                createTimePickerDialog();
-                break;
-            case R.id.action_set_alarm:
-                setTestAlarm();
-                break;
-            case R.id.action_cancel_alarm:
-                cancelTestAlarm();
-                break;
             default:
                 break;
         }
@@ -126,29 +119,6 @@ public class MainActivity extends AppCompatActivity {
             default:
                 break;
         }
-    }
-
-    private void setTestAlarm() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            Intent intent = new Intent(this, AlarmActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(
-                    this,
-                    1,
-                    intent,
-                    PendingIntent.FLAG_ONE_SHOT
-            );
-            AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(System.currentTimeMillis() + 10 * 1000, pendingIntent);
-
-            alarmManager.setAlarmClock(info, pendingIntent);
-        }
-    }
-
-    private void cancelTestAlarm() {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, AlarmActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_ONE_SHOT);
-        alarmManager.cancel(pendingIntent);
     }
 
     private void createTimePickerDialog() {
