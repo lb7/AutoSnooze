@@ -101,7 +101,7 @@ public class AlarmActivity extends AppCompatActivity {
                 .findAll()
                 .first();
 
-        if (alarmInfo.isRepeat()) {
+        if (alarmInfo.isRepeating()) {
             AlarmUtils.setAlarm(alarmInfo, getApplicationContext());
         } else {
             realm.beginTransaction();

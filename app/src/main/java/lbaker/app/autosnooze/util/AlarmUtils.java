@@ -51,7 +51,7 @@ public class AlarmUtils {
         alarmTime.set(Calendar.MINUTE, alarmInfo.getMinute());
         alarmTime.set(Calendar.SECOND, 0);
 
-        if (alarmInfo.isRepeat()) {
+        if (alarmInfo.isRepeating()) {
             byte[] days = alarmInfo.getDays();
             int currentDay = alarmTime.get(Calendar.DAY_OF_WEEK);
 

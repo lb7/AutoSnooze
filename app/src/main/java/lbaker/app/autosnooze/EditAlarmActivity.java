@@ -8,12 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import lbaker.app.autosnooze.util.AlarmUtils;
 
 
@@ -27,6 +27,8 @@ public class EditAlarmActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_alarm);
+
+        ButterKnife.bind(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -48,14 +50,6 @@ public class EditAlarmActivity extends AppCompatActivity {
         //This AlarmInfo is used for printing purposes only.
         //Not persisted in any way.
         timeView.setText(AlarmUtils.printAlarm(new AlarmInfo(hour, minute)));
-
-        Button saveButton = (Button) findViewById(R.id.button_save);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveChanges();
-            }
-        });
     }
 
     @Override
@@ -80,7 +74,8 @@ public class EditAlarmActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void saveChanges() {
+    @OnClick(R.id.button_save)
+    void saveChanges() {
         Intent result = new Intent();
 
         boolean repeat = false;

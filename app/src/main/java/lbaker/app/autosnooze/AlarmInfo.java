@@ -1,5 +1,6 @@
 package lbaker.app.autosnooze;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 
 /**
@@ -11,9 +12,10 @@ public class AlarmInfo extends RealmObject {
     private int minute;
     private int id;
     private boolean isEnabled;
-    private boolean repeat;
-
+    private boolean repeating;
     private byte[] days;
+
+    private RealmList<AlarmInfo> snoozeAlarms;
 
     public AlarmInfo() {
         this(0, 0);
@@ -57,12 +59,12 @@ public class AlarmInfo extends RealmObject {
         this.isEnabled = isEnabled;
     }
 
-    public boolean isRepeat() {
-        return repeat;
+    public boolean isRepeating() {
+        return repeating;
     }
 
-    public void setRepeat(boolean repeat) {
-        this.repeat = repeat;
+    public void setRepeating(boolean repeating) {
+        this.repeating = repeating;
     }
 
     public byte[] getDays() {
@@ -71,5 +73,13 @@ public class AlarmInfo extends RealmObject {
 
     public void setDays(byte[] days) {
         this.days = days;
+    }
+
+    public RealmList<AlarmInfo> getSnoozeAlarms() {
+        return snoozeAlarms;
+    }
+
+    public void setSnoozeAlarms(RealmList<AlarmInfo> snoozeAlarms) {
+        this.snoozeAlarms = snoozeAlarms;
     }
 }
