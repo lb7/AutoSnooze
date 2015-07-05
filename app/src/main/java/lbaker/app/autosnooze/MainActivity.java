@@ -42,9 +42,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         realm = Realm.getInstance(this);
-        RealmResults<AlarmInfo> results = realm.allObjectsSorted(AlarmInfo.class, "hour", true, "minute", true);
+        RealmResults<Alarm> results = realm.allObjectsSorted(Alarm.class, "hour", true, "minute", true);
 
-        List<AlarmInfo> alarmList = new ArrayList<>(results);
+        List<Alarm> alarmList = new ArrayList<>(results);
 
         recyclerAdapter = new RecyclerAdapter(alarmList, realm, getApplicationContext());
         recyclerView.addItemDecoration(new AlarmListItemDecoration(getResources()));
@@ -104,16 +104,16 @@ public class MainActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
                     realm.beginTransaction();
 
-                    AlarmInfo alarmInfo = realm.createObject(AlarmInfo.class);
-                    alarmInfo.setHour(data.getIntExtra("hour", 0));
-                    alarmInfo.setMinute(data.getIntExtra("minute", 0));
-                    alarmInfo.setId(data.getIntExtra("id", 0));
-                    alarmInfo.setDays(data.getByteArrayExtra("days"));
-                    alarmInfo.setRepeating(data.getBooleanExtra("repeat", false));
-                    alarmInfo.setEnabled(true);
+                    Alarm alarm = realm.createObject(Alarm.class);
+                    alarm.setHour(data.getIntExtra("hour", 0));
+                    alarm.setMinute(data.getIntExtra("minute", 0));
+                    alarm.setId(data.getIntExtra("id", 0));
+                    alarm.setDays(data.getByteArrayExtra("days"));
+                    alarm.setRepeating(data.getBooleanExtra("repeat", false));
+                    alarm.setEnabled(true);
 
                     realm.commitTransaction();
-                    recyclerAdapter.addItem(alarmInfo);
+                    recyclerAdapter.addItem(alarm);
                 }
                 break;
             default:

@@ -10,18 +10,19 @@ import lbaker.app.autosnooze.util.AlarmUtils;
 
 /**
  * Created by Luke on 5/13/2015.
+ *
  */
 public class AlarmBootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Realm realm = Realm.getInstance(context);
 
-        RealmResults<AlarmInfo> enabledAlarms = realm.where(AlarmInfo.class)
+        RealmResults<Alarm> enabledAlarms = realm.where(Alarm.class)
                 .equalTo("isEnabled", true)
                 .findAll();
 
-        for (AlarmInfo alarmInfo : enabledAlarms) {
-            AlarmUtils.setAlarm(alarmInfo, context);
+        for (Alarm alarm : enabledAlarms) {
+            AlarmUtils.setAlarm(alarm, context);
         }
 
         realm.close();

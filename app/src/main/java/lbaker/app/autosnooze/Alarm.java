@@ -6,7 +6,7 @@ import io.realm.RealmObject;
 /**
  * Created by Luke on 12/29/2014.
  */
-public class AlarmInfo extends RealmObject {
+public class Alarm extends RealmObject {
 
     private int hour;
     private int minute;
@@ -15,13 +15,13 @@ public class AlarmInfo extends RealmObject {
     private boolean repeating;
     private byte[] days;
 
-    private RealmList<AlarmInfo> snoozeAlarms;
+    private RealmList<Alarm> snoozeAlarms;
 
-    public AlarmInfo() {
+    public Alarm() {
         this(0, 0);
     }
 
-    public AlarmInfo(int hour, int minute) {
+    public Alarm(int hour, int minute) {
         this.hour = hour;
         this.minute = minute;
         this.isEnabled = true;
@@ -75,11 +75,11 @@ public class AlarmInfo extends RealmObject {
         this.days = days;
     }
 
-    public RealmList<AlarmInfo> getSnoozeAlarms() {
+    public RealmList<Alarm> getSnoozeAlarms() {
         return snoozeAlarms;
     }
 
-    public void setSnoozeAlarms(RealmList<AlarmInfo> snoozeAlarms) {
+    public void setSnoozeAlarms(RealmList<Alarm> snoozeAlarms) {
         this.snoozeAlarms = snoozeAlarms;
     }
 }

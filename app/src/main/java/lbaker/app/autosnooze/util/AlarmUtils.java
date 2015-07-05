@@ -10,17 +10,17 @@ import android.os.Build;
 import java.util.Calendar;
 
 import lbaker.app.autosnooze.AlarmActivity;
-import lbaker.app.autosnooze.AlarmInfo;
+import lbaker.app.autosnooze.Alarm;
 import lbaker.app.autosnooze.R;
 
 public class AlarmUtils {
 
     public static final int NUM_DAYS_WEEK = 7;
 
-    public static void setAlarm(AlarmInfo alarmInfo, Context context) {
-        int id = alarmInfo.getId();
+    public static void setAlarm(Alarm alarm, Context context) {
+        int id = alarm.getId();
 
-        long alarmTime = AlarmUtils.findNextAlarmTime(alarmInfo);
+        long alarmTime = AlarmUtils.findNextAlarmTime(alarm);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
@@ -44,15 +44,15 @@ public class AlarmUtils {
         }
     }
 
-    public static long findNextAlarmTime(AlarmInfo alarmInfo) {
+    public static long findNextAlarmTime(Alarm alarm) {
         Calendar alarmTime = Calendar.getInstance();
 
-        alarmTime.set(Calendar.HOUR_OF_DAY, alarmInfo.getHour());
-        alarmTime.set(Calendar.MINUTE, alarmInfo.getMinute());
+        alarmTime.set(Calendar.HOUR_OF_DAY, alarm.getHour());
+        alarmTime.set(Calendar.MINUTE, alarm.getMinute());
         alarmTime.set(Calendar.SECOND, 0);
 
-        if (alarmInfo.isRepeating()) {
-            byte[] days = alarmInfo.getDays();
+        if (alarm.isRepeating()) {
+            byte[] days = alarm.getDays();
             int currentDay = alarmTime.get(Calendar.DAY_OF_WEEK);
 
             //Each index of this array corresponds to a day of the week, starting with Sunday.
@@ -83,12 +83,12 @@ public class AlarmUtils {
         return alarmTime.getTimeInMillis();
     }
 
-    public static void cancelAlarm(AlarmInfo alarmInfo, Context context) {
+    public static void cancelAlarm(Alarm alarm, Context context) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context,
-                alarmInfo.getId(),
+                alarm.getId(),
                 intent,
                 PendingIntent.FLAG_ONE_SHOT
         );
@@ -123,13 +123,13 @@ public class AlarmUtils {
         return hour + ":" + minute + " " + amPm;
     }
 
-    public static String printAlarm(AlarmInfo alarmInfo) {
-        return AlarmUtils.printAlarm(alarmInfo.getHour(), alarmInfo.getMinute());
+    public static String printAlarm(Alarm alarm) {
+        return AlarmUtils.printAlarm(alarm.getHour(), alarm.getMinute());
     }
 
-    public static String printDays(AlarmInfo alarmInfo, Resources resources) {
+    public static String printDays(Alarm alarm, Resources resources) {
         StringBuilder stringBuilder = new StringBuilder();
-        byte[] days = alarmInfo.getDays();
+        byte[] days = alarm.getDays();
         int lastDay = 0;
 
         for (int idx = 0; idx < days.length; idx++) {
@@ -148,8 +148,8 @@ public class AlarmUtils {
         } else {
             Calendar currentTime = Calendar.getInstance();
 
-            if (currentTime.get(Calendar.HOUR_OF_DAY) < alarmInfo.getHour() ||
-                    (currentTime.get(Calendar.HOUR_OF_DAY) == alarmInfo.getHour() && currentTime.get(Calendar.MINUTE) < alarmInfo.getMinute())){
+            if (currentTime.get(Calendar.HOUR_OF_DAY) < alarm.getHour() ||
+                    (currentTime.get(Calendar.HOUR_OF_DAY) == alarm.getHour() && currentTime.get(Calendar.MINUTE) < alarm.getMinute())){
                 stringBuilder.append(resources.getString(R.string.today));
             } else {
                 stringBuilder.append(resources.getString(R.string.tomorrow));

@@ -96,16 +96,16 @@ public class AlarmActivity extends AppCompatActivity {
         int id = getIntent().getIntExtra("id", 0);
 
         Realm realm = Realm.getInstance(AlarmActivity.this);
-        AlarmInfo alarmInfo = realm.where(AlarmInfo.class)
+        Alarm alarm = realm.where(Alarm.class)
                 .equalTo("id", id)
                 .findAll()
                 .first();
 
-        if (alarmInfo.isRepeating()) {
-            AlarmUtils.setAlarm(alarmInfo, getApplicationContext());
+        if (alarm.isRepeating()) {
+            AlarmUtils.setAlarm(alarm, getApplicationContext());
         } else {
             realm.beginTransaction();
-            alarmInfo.setEnabled(false);
+            alarm.setEnabled(false);
             realm.commitTransaction();
         }
 

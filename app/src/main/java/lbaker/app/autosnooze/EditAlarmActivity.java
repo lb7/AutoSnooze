@@ -47,9 +47,9 @@ public class EditAlarmActivity extends AppCompatActivity {
 
         TextView timeView = (TextView) findViewById(R.id.text_alarm);
 
-        //This AlarmInfo is used for printing purposes only.
+        //This Alarm is used for printing purposes only.
         //Not persisted in any way.
-        timeView.setText(AlarmUtils.printAlarm(new AlarmInfo(hour, minute)));
+        timeView.setText(AlarmUtils.printAlarm(new Alarm(hour, minute)));
     }
 
     @Override

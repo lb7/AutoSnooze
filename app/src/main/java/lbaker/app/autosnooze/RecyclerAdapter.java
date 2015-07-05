@@ -24,16 +24,17 @@ import lbaker.app.autosnooze.util.AlarmUtils;
 
 /**
  * Created by Luke on 12/29/2014.
+ *
  */
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmViewHolder> {
 
-    private List<AlarmInfo> alarmInfoList;
+    private List<Alarm> alarmList;
     private Realm realm;
     private Context context;
 
-    public RecyclerAdapter(List<AlarmInfo> alarmInfoList, Realm realm, Context context) {
+    public RecyclerAdapter(List<Alarm> alarmList, Realm realm, Context context) {
         this.realm = realm;
-        this.alarmInfoList = alarmInfoList;
+        this.alarmList = alarmList;
         this.context = context;
     }
 
@@ -48,25 +49,25 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
 
     @Override
     public void onBindViewHolder(AlarmViewHolder alarmViewHolder, final int i) {
-        final AlarmInfo alarmInfo = alarmInfoList.get(i);
-        alarmViewHolder.timeView.setText(AlarmUtils.printAlarm(alarmInfo));
-        alarmViewHolder.daysView.setText(AlarmUtils.printDays(alarmInfo, context.getResources()));
+        final Alarm alarm = alarmList.get(i);
+        alarmViewHolder.timeView.setText(AlarmUtils.printAlarm(alarm));
+        alarmViewHolder.daysView.setText(AlarmUtils.printDays(alarm, context.getResources()));
 
         alarmViewHolder.toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 realm.beginTransaction();
-                alarmInfo.setEnabled(isChecked);
+                alarm.setEnabled(isChecked);
                 realm.commitTransaction();
 
                 if (isChecked) {
-                    AlarmUtils.setAlarm(alarmInfo, context);
+                    AlarmUtils.setAlarm(alarm, context);
                 } else {
-                    AlarmUtils.cancelAlarm(alarmInfo, context);
+                    AlarmUtils.cancelAlarm(alarm, context);
                 }
             }
         });
-        alarmViewHolder.toggle.setChecked(alarmInfo.isEnabled());
+        alarmViewHolder.toggle.setChecked(alarm.isEnabled());
 
         alarmViewHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,17 +76,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
                 Intent intent = new Intent(context, AlarmActivity.class);
                 PendingIntent pendingIntent = PendingIntent.getActivity(
                         context,
-                        alarmInfo.getId(),
+                        alarm.getId(),
                         intent,
                         PendingIntent.FLAG_ONE_SHOT
                 );
                 alarmManager.cancel(pendingIntent);
 
                 realm.beginTransaction();
-                alarmInfo.removeFromRealm();
+                alarm.removeFromRealm();
                 realm.commitTransaction();
 
-                alarmInfoList.remove(i);
+                alarmList.remove(i);
                 notifyDataSetChanged();
             }
         });
@@ -102,19 +103,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
 
     @Override
     public int getItemCount() {
-        return alarmInfoList.size();
+        return alarmList.size();
     }
 
-    void addItem(AlarmInfo alarmInfo) {
-        alarmInfoList.add(alarmInfo);
-        AlarmUtils.setAlarm(alarmInfo, context);
+    void addItem(Alarm alarm) {
+        alarmList.add(alarm);
+        AlarmUtils.setAlarm(alarm, context);
         notifyDataSetChanged();
     }
 
     void refresh() {
-        RealmResults<AlarmInfo> results = realm.allObjectsSorted(AlarmInfo.class, "hour", true, "minute", true);
+        RealmResults<Alarm> results = realm.allObjectsSorted(Alarm.class, "hour", true, "minute", true);
 
-        alarmInfoList = new ArrayList<>(results);
+        alarmList = new ArrayList<>(results);
         notifyDataSetChanged();
     }
 
