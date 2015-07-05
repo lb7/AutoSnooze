@@ -90,6 +90,14 @@
                 android:layout_weight="1" />
         </LinearLayout>
 
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Snooze"
+            android:id="@+id/check_snooze"
+            android:checked="false"
+            android:enabled="true" />
+
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -98,7 +106,8 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:id="@+id/text_snooze_duration"
-                android:hint="@string/hint_snooze_duration"/>
+                android:hint="@string/hint_snooze_duration"
+                android:enabled="false" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -109,7 +118,8 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:id="@+id/text_snooze_quantity"
-                android:hint="@string/hint_snooze_quantity"/>
+                android:hint="@string/hint_snooze_quantity"
+                android:enabled="false" />
         </android.support.design.widget.TextInputLayout>
 
         <Button
@@ -117,6 +127,7 @@
             android:layout_height="wrap_content"
             android:text="Save Changes"
             android:id="@+id/button_save" />
+
     </LinearLayout>
 
 

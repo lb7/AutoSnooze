@@ -5,17 +5,23 @@ import io.realm.RealmObject;
 
 /**
  * Created by Luke on 12/29/2014.
+ *
  */
 public class Alarm extends RealmObject {
 
     private int hour;
     private int minute;
     private int id;
+    private int snoozeDuration;
+    private int snoozeQuantity;
+
     private boolean isEnabled;
     private boolean repeating;
+    private boolean snoozeEnabled;
+
     private byte[] days;
 
-    private RealmList<Alarm> snoozeAlarms;
+    private RealmList<SnoozeAlarm> snoozeAlarms;
 
     public Alarm() {
         this(0, 0);
@@ -51,12 +57,36 @@ public class Alarm extends RealmObject {
         this.id = id;
     }
 
+    public int getSnoozeDuration() {
+        return snoozeDuration;
+    }
+
+    public void setSnoozeDuration(int snoozeDuration) {
+        this.snoozeDuration = snoozeDuration;
+    }
+
+    public int getSnoozeQuantity() {
+        return snoozeQuantity;
+    }
+
+    public void setSnoozeQuantity(int snoozeQuantity) {
+        this.snoozeQuantity = snoozeQuantity;
+    }
+
     public boolean isEnabled() {
         return isEnabled;
     }
 
     public void setEnabled(boolean isEnabled) {
         this.isEnabled = isEnabled;
+    }
+
+    public boolean isSnoozeEnabled() {
+        return snoozeEnabled;
+    }
+
+    public void setSnoozeEnabled(boolean snoozeEnabled) {
+        this.snoozeEnabled = snoozeEnabled;
     }
 
     public boolean isRepeating() {
@@ -75,11 +105,11 @@ public class Alarm extends RealmObject {
         this.days = days;
     }
 
-    public RealmList<Alarm> getSnoozeAlarms() {
+    public RealmList<SnoozeAlarm> getSnoozeAlarms() {
         return snoozeAlarms;
     }
 
-    public void setSnoozeAlarms(RealmList<Alarm> snoozeAlarms) {
+    public void setSnoozeAlarms(RealmList<SnoozeAlarm> snoozeAlarms) {
         this.snoozeAlarms = snoozeAlarms;
     }
 }

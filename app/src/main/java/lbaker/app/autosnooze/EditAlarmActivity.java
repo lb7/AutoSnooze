@@ -9,10 +9,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import lbaker.app.autosnooze.util.AlarmUtils;
 
@@ -22,6 +26,11 @@ public class EditAlarmActivity extends AppCompatActivity {
     private int hour;
     private int minute;
     private int id;
+
+    private boolean snoozeEnabled;
+
+    @Bind(R.id.text_snooze_duration) EditText editSnoozeDuration;
+    @Bind(R.id.text_snooze_quantity) EditText editSnoozeQuantity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +55,9 @@ public class EditAlarmActivity extends AppCompatActivity {
         id = intent.getIntExtra("id", 0);
 
         TextView timeView = (TextView) findViewById(R.id.text_alarm);
+        CheckBox checkSnooze = (CheckBox) findViewById(R.id.check_snooze);
+
+        checkSnooze.setChecked(snoozeEnabled);
 
         //This Alarm is used for printing purposes only.
         //Not persisted in any way.
@@ -91,13 +103,27 @@ public class EditAlarmActivity extends AppCompatActivity {
             }
         }
 
+        int snoozeDuration = Integer.parseInt(editSnoozeDuration.getText().toString());
+        int snoozeQuantity = Integer.parseInt(editSnoozeQuantity.getText().toString());
+
         result.putExtra("hour", hour)
                 .putExtra("minute", minute)
                 .putExtra("id", id)
+                .putExtra("snoozeDuration", snoozeDuration)
+                .putExtra("snoozeQuantity", snoozeQuantity)
                 .putExtra("days", days)
-                .putExtra("repeat", repeat);
+                .putExtra("repeat", repeat)
+                .putExtra("snoozeEnabled", snoozeEnabled);
 
         setResult(RESULT_OK, result);
         finish();
     }
+
+    @OnCheckedChanged(R.id.check_snooze)
+    void snoozeChanged(boolean checked) {
+        snoozeEnabled = checked;
+        editSnoozeQuantity.setEnabled(checked);
+        editSnoozeDuration.setEnabled(checked);
+    }
+
 }

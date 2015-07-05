@@ -95,6 +95,7 @@ public class AlarmActivity extends AppCompatActivity {
         //onPause and onStop being called twice when the screen is locked.
         int id = getIntent().getIntExtra("id", 0);
 
+        //todo: add support for resetting snooze alarms
         Realm realm = Realm.getInstance(AlarmActivity.this);
         Alarm alarm = realm.where(Alarm.class)
                 .equalTo("id", id)

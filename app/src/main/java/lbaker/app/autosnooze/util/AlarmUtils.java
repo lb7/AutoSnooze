@@ -9,9 +9,12 @@ import android.os.Build;
 
 import java.util.Calendar;
 
-import lbaker.app.autosnooze.AlarmActivity;
+import io.realm.Realm;
+import io.realm.RealmList;
 import lbaker.app.autosnooze.Alarm;
+import lbaker.app.autosnooze.AlarmActivity;
 import lbaker.app.autosnooze.R;
+import lbaker.app.autosnooze.SnoozeAlarm;
 
 public class AlarmUtils {
 
@@ -41,6 +44,41 @@ public class AlarmUtils {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
+        }
+
+        if (alarm.isSnoozeEnabled()) {
+            AlarmUtils.setSnoozeAlarms(alarm, context);
+        }
+    }
+
+    private static void setSnoozeAlarms(Alarm alarm, Context context) {
+        RealmList<SnoozeAlarm> snoozeAlarms = alarm.getSnoozeAlarms();
+
+        for (SnoozeAlarm snoozeAlarm : snoozeAlarms) {
+            int id = snoozeAlarm.getId();
+
+            long alarmTime = AlarmUtils.findNextAlarmTime(new Alarm(snoozeAlarm.getHour(), snoozeAlarm.getMinute()));
+
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+            Intent intent = new Intent(context, AlarmActivity.class);
+            intent.putExtra("id", id);
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                    context,
+                    id,
+                    intent,
+                    PendingIntent.FLAG_ONE_SHOT
+            );
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(alarmTime, pendingIntent);
+                alarmManager.setAlarmClock(info, pendingIntent);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
+            } else {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
+            }
         }
     }
 
@@ -94,6 +132,27 @@ public class AlarmUtils {
         );
 
         alarmManager.cancel(pendingIntent);
+        if (alarm.isSnoozeEnabled()) {
+            AlarmUtils.cancelSnoozeAlarms(alarm, context);
+        }
+    }
+
+    public static void cancelSnoozeAlarms(Alarm alarm, Context context) {
+        RealmList<SnoozeAlarm> snoozeAlarms = alarm.getSnoozeAlarms();
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        for (SnoozeAlarm snoozeAlarm : snoozeAlarms) {
+            Intent intent = new Intent(context, AlarmActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                    context,
+                    snoozeAlarm.getId(),
+                    intent,
+                    PendingIntent.FLAG_ONE_SHOT
+            );
+
+            alarmManager.cancel(pendingIntent);
+        }
     }
 
     public static String printAlarm(int alarmHour, int alarmMinute) {
@@ -215,5 +274,29 @@ public class AlarmUtils {
             }
         }
         return resources.getString(dayString);
+    }
+
+    public static void createSnoozeAlarms(Alarm alarm, Context context) {
+        Realm realm = Realm.getInstance(context);
+
+        Calendar alarmTime = Calendar.getInstance();
+        alarmTime.set(Calendar.HOUR_OF_DAY, alarm.getHour());
+        alarmTime.set(Calendar.MINUTE, alarm.getMinute());
+
+        realm.beginTransaction();
+        RealmList<SnoozeAlarm> snoozeAlarms = alarm.getSnoozeAlarms();
+
+        for (int i = 0; i < alarm.getSnoozeQuantity(); i++) {
+            alarmTime.add(Calendar.MINUTE, alarm.getSnoozeDuration());
+
+            SnoozeAlarm snoozeAlarm = realm.createObject(SnoozeAlarm.class);
+            snoozeAlarm.setHour(alarmTime.get(Calendar.HOUR_OF_DAY));
+            snoozeAlarm.setMinute(alarmTime.get(Calendar.MINUTE));
+            snoozeAlarm.setId((int) System.currentTimeMillis() / 1000);
+
+            snoozeAlarms.add(snoozeAlarm);
+        }
+        realm.commitTransaction();
+        realm.close();
     }
 }

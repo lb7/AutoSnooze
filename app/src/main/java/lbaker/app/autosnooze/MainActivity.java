@@ -18,6 +18,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import lbaker.app.autosnooze.util.AlarmUtils;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -110,9 +111,16 @@ public class MainActivity extends AppCompatActivity {
                     alarm.setId(data.getIntExtra("id", 0));
                     alarm.setDays(data.getByteArrayExtra("days"));
                     alarm.setRepeating(data.getBooleanExtra("repeat", false));
+                    alarm.setSnoozeDuration(data.getIntExtra("snoozeDuration", 0));
+                    alarm.setSnoozeQuantity(data.getIntExtra("snoozeQuantity", 0));
+                    alarm.setSnoozeEnabled(data.getBooleanExtra("snoozeEnabled", false));
                     alarm.setEnabled(true);
 
                     realm.commitTransaction();
+
+                    if (alarm.isSnoozeEnabled()) {
+                        AlarmUtils.createSnoozeAlarms(alarm, getApplicationContext());
+                    }
                     recyclerAdapter.addItem(alarm);
                 }
                 break;

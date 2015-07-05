@@ -1,9 +1,6 @@
 package lbaker.app.autosnooze;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,7 +69,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
         alarmViewHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                /*AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                 Intent intent = new Intent(context, AlarmActivity.class);
                 PendingIntent pendingIntent = PendingIntent.getActivity(
                         context,
@@ -87,7 +84,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
                 realm.commitTransaction();
 
                 alarmList.remove(i);
-                notifyDataSetChanged();
+                notifyDataSetChanged();*/
+                AlarmUtils.cancelAlarm(alarm, context);
             }
         });
 
