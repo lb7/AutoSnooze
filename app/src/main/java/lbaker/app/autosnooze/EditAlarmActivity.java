@@ -31,6 +31,7 @@ public class EditAlarmActivity extends AppCompatActivity {
 
     @Bind(R.id.text_snooze_duration) EditText editSnoozeDuration;
     @Bind(R.id.text_snooze_quantity) EditText editSnoozeQuantity;
+    @Bind(R.id.check_snooze)         CheckBox checkSnooze;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,6 @@ public class EditAlarmActivity extends AppCompatActivity {
         id = intent.getIntExtra("id", 0);
 
         TextView timeView = (TextView) findViewById(R.id.text_alarm);
-        CheckBox checkSnooze = (CheckBox) findViewById(R.id.check_snooze);
 
         checkSnooze.setChecked(snoozeEnabled);
 
@@ -103,8 +103,12 @@ public class EditAlarmActivity extends AppCompatActivity {
             }
         }
 
-        int snoozeDuration = Integer.parseInt(editSnoozeDuration.getText().toString());
-        int snoozeQuantity = Integer.parseInt(editSnoozeQuantity.getText().toString());
+        int snoozeDuration = 0;
+        int snoozeQuantity = 0;
+        if (checkSnooze.isChecked()) {
+            snoozeDuration = Integer.parseInt(editSnoozeDuration.getText().toString());
+            snoozeQuantity = Integer.parseInt(editSnoozeQuantity.getText().toString());
+        }
 
         result.putExtra("hour", hour)
                 .putExtra("minute", minute)

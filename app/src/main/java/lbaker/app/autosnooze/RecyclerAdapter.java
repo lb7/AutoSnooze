@@ -86,6 +86,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
                 alarmList.remove(i);
                 notifyDataSetChanged();*/
                 AlarmUtils.cancelAlarm(alarm, context);
+
+                realm.beginTransaction();
+                alarm.removeFromRealm();
+                realm.commitTransaction();
+
+                alarmList.remove(i);
+                notifyDataSetChanged();
             }
         });
 
