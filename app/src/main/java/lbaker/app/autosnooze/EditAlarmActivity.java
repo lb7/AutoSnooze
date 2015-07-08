@@ -88,6 +88,24 @@ public class EditAlarmActivity extends AppCompatActivity {
 
     @OnClick(R.id.button_save)
     void saveChanges() {
+        int snoozeDuration = 0;
+        int snoozeQuantity = 0;
+
+        if (checkSnooze.isChecked()) {
+            if (editSnoozeDuration.getText().toString().trim().length() == 0) {
+                editSnoozeDuration.setError(getString(R.string.error_input_required));
+            }
+            if (editSnoozeQuantity.getText().toString().trim().length() == 0) {
+                editSnoozeQuantity.setError(getString(R.string.error_input_required));
+            }
+            if (editSnoozeQuantity.getError() != null ||
+                    editSnoozeDuration.getError() != null) {
+                return;
+            }
+            snoozeDuration = Integer.parseInt(editSnoozeDuration.getText().toString());
+            snoozeQuantity = Integer.parseInt(editSnoozeQuantity.getText().toString());
+        }
+
         Intent result = new Intent();
 
         boolean repeat = false;
@@ -101,13 +119,6 @@ public class EditAlarmActivity extends AppCompatActivity {
                 days[idx] = 1;
                 repeat = true;
             }
-        }
-
-        int snoozeDuration = 0;
-        int snoozeQuantity = 0;
-        if (checkSnooze.isChecked()) {
-            snoozeDuration = Integer.parseInt(editSnoozeDuration.getText().toString());
-            snoozeQuantity = Integer.parseInt(editSnoozeQuantity.getText().toString());
         }
 
         result.putExtra("hour", hour)
@@ -128,6 +139,13 @@ public class EditAlarmActivity extends AppCompatActivity {
         snoozeEnabled = checked;
         editSnoozeQuantity.setEnabled(checked);
         editSnoozeDuration.setEnabled(checked);
+        if (!checked) {
+            editSnoozeDuration.setError(null);
+            editSnoozeDuration.clearFocus();
+
+            editSnoozeQuantity.setError(null);
+            editSnoozeQuantity.clearFocus();
+        }
     }
 
 }
