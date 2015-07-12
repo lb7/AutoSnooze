@@ -29,7 +29,8 @@
                 android:id="@+id/text_days"
             android:layout_alignTop="@+id/text_time"
             android:layout_alignStart="@+id/text_time"
-            android:layout_marginTop="48dp" />
+            android:layout_marginTop="48dp"
+            android:layout_marginBottom="8dp" />
     </RelativeLayout>
 
     <LinearLayout
