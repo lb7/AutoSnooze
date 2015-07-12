@@ -22,7 +22,7 @@
             android:layout_gravity="left|top"
             android:scrollbars="vertical" />
 
-        <ImageButton
+        <!--<ImageButton
             android:layout_width="@dimen/FAB_width"
             android:layout_height="@dimen/FAB_width"
             android:id="@+id/fab"
@@ -34,7 +34,20 @@
             android:tint="@android:color/white"
             android:background="@drawable/fab"
             android:scaleType="center"
-            android:padding="16dp" />
+            android:padding="16dp" />-->
+        
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="@dimen/FAB_width"
+            android:layout_height="@dimen/FAB_width"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="@dimen/FAB_margin"
+            android:layout_marginRight="@dimen/FAB_margin"
+            app:elevation="6dp"
+            app:pressedTranslationZ="12dp"
+            android:id="@+id/fab"
+            android:src="@drawable/ic_add"
+            app:rippleColor="@android:color/white"
+            app:borderWidth="0dp"/>
 
     </FrameLayout>
 
