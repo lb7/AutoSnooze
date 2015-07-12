@@ -45,7 +45,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
     }
 
     @Override
-    public void onBindViewHolder(AlarmViewHolder alarmViewHolder, final int i) {
+    public void onBindViewHolder(final AlarmViewHolder alarmViewHolder, final int i) {
         final Alarm alarm = alarmList.get(i);
         alarmViewHolder.timeView.setText(AlarmUtils.printAlarm(alarm));
         alarmViewHolder.daysView.setText(AlarmUtils.printDays(alarm, context.getResources()));
@@ -69,30 +69,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
         alarmViewHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                Intent intent = new Intent(context, AlarmActivity.class);
-                PendingIntent pendingIntent = PendingIntent.getActivity(
-                        context,
-                        alarm.getId(),
-                        intent,
-                        PendingIntent.FLAG_ONE_SHOT
-                );
-                alarmManager.cancel(pendingIntent);
-
-                realm.beginTransaction();
-                alarm.removeFromRealm();
-                realm.commitTransaction();
-
-                alarmList.remove(i);
-                notifyDataSetChanged();*/
                 AlarmUtils.cancelAlarm(alarm, context);
 
                 realm.beginTransaction();
                 alarm.removeFromRealm();
                 realm.commitTransaction();
 
-                alarmList.remove(i);
-                notifyDataSetChanged();
+                int idx = alarmViewHolder.getAdapterPosition();
+
+                alarmList.remove(idx);
+                notifyItemRemoved(idx);
             }
         });
 

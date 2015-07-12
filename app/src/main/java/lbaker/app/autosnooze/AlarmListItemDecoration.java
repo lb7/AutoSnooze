@@ -37,7 +37,9 @@ public class AlarmListItemDecoration extends RecyclerView.ItemDecoration {
         for (int i = 0; i < childCount; i++) {
             View child = parent.getChildAt(i);
 
-            divider.setBounds(child.getLeft(), child.getBottom() - dividerHeightPX, child.getRight(), child.getBottom());
+            int top = child.getBottom() - dividerHeightPX + (int) child.getTranslationY();
+
+            divider.setBounds(child.getLeft(), top, child.getRight(), top + dividerHeightPX);
             divider.draw(c);
         }
     }
