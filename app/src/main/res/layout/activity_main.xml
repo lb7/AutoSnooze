@@ -7,48 +7,52 @@
     android:orientation="vertical">
 
     <include layout="@layout/toolbar" />
-
-    <FrameLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:weightSum="1">
-
-        <android.support.v7.widget.RecyclerView
+        <FrameLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/recycler"
-            android:layout_gravity="left|top"
-            android:scrollbars="vertical" />
+            android:layout_gravity="center_horizontal"
+            android:weightSum="1">
 
-        <!--<ImageButton
-            android:layout_width="@dimen/FAB_width"
-            android:layout_height="@dimen/FAB_width"
-            android:id="@+id/fab"
-            android:layout_gravity="bottom|right"
-            android:layout_marginBottom="@dimen/FAB_margin"
-            android:layout_marginRight="@dimen/FAB_margin"
-            style="@style/AppTheme.FAB"
-            android:src="@drawable/ic_add"
-            android:tint="@android:color/white"
-            android:background="@drawable/fab"
-            android:scaleType="center"
-            android:padding="16dp" />-->
-        
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="@dimen/FAB_width"
-            android:layout_height="@dimen/FAB_width"
-            android:layout_gravity="bottom|end"
-            android:layout_marginBottom="@dimen/FAB_margin"
-            android:layout_marginRight="@dimen/FAB_margin"
-            app:elevation="6dp"
-            app:pressedTranslationZ="12dp"
-            android:id="@+id/fab"
-            android:src="@drawable/ic_add"
-            app:rippleColor="@android:color/white"
-            app:borderWidth="0dp"/>
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/recycler"
+                android:layout_gravity="left|top"
+                android:scrollbars="vertical" />
 
-    </FrameLayout>
+            <!--<ImageButton
+                android:layout_width="@dimen/FAB_width"
+                android:layout_height="@dimen/FAB_width"
+                android:id="@+id/fab"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="@dimen/FAB_margin"
+                android:layout_marginRight="@dimen/FAB_margin"
+                style="@style/AppTheme.FAB"
+                android:src="@drawable/ic_add"
+                android:tint="@android:color/white"
+                android:background="@drawable/fab"
+                android:scaleType="center"
+                android:padding="16dp" />-->
 
+            <android.support.design.widget.CoordinatorLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:id="@+id/coordinator">
+
+                <android.support.design.widget.FloatingActionButton
+                    android:layout_width="@dimen/FAB_width"
+                    android:layout_height="@dimen/FAB_width"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginBottom="@dimen/FAB_margin"
+                    android:layout_marginRight="@dimen/FAB_margin"
+                    app:elevation="6dp"
+                    app:pressedTranslationZ="12dp"
+                    android:id="@+id/fab"
+                    android:src="@drawable/ic_add"
+                    app:rippleColor="@android:color/white"
+                    app:borderWidth="0dp"/>
+            </android.support.design.widget.CoordinatorLayout>
+
+        </FrameLayout>
 </LinearLayout>

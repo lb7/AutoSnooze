@@ -1,6 +1,7 @@
 package lbaker.app.autosnooze;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,6 +80,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
 
                 alarmList.remove(idx);
                 notifyItemRemoved(idx);
+
+                Snackbar.make(v.getRootView().findViewById(R.id.coordinator), "Alarm deleted", Snackbar.LENGTH_LONG).show();
             }
         });
 
