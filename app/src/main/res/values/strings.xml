@@ -7,7 +7,6 @@
     <string name="action_new">New Alarm</string>
     <string name="action_test_alarm">Set Test Alarm</string>
     <string name="action_cancel_alarm">Cancel Test Alarm</string>
-    <string name="action_test_notification">Test Notification</string>
 
     <string name="info_alarm_on">Alarm is on</string>
     <string name="info_alarm_off">Alarm is off</string>

@@ -93,9 +93,6 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.action_notification:
-                testNotification();
-                break;
             default:
                 break;
         }
@@ -139,9 +136,5 @@ public class MainActivity extends AppCompatActivity {
     private void createTimePickerDialog() {
         DialogFragment timePickerFragment = new TimePickerFragment();
         timePickerFragment.show(getSupportFragmentManager(), "timePicker");
-    }
-
-    private void testNotification() {
-
     }
 }
