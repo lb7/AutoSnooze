@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
+import android.support.v4.app.NotificationManagerCompat;
 
 import java.util.Calendar;
 
@@ -13,6 +14,7 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import lbaker.app.autosnooze.Alarm;
 import lbaker.app.autosnooze.AlarmActivity;
+import lbaker.app.autosnooze.NotificationService;
 import lbaker.app.autosnooze.R;
 import lbaker.app.autosnooze.SnoozeAlarm;
 
@@ -25,8 +27,6 @@ public class AlarmUtils {
 
         long alarmTime = AlarmUtils.findNextAlarmTime(alarm);
 
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
         Intent intent = new Intent(context, AlarmActivity.class);
         intent.putExtra("id", id);
 
@@ -37,18 +37,13 @@ public class AlarmUtils {
                 PendingIntent.FLAG_ONE_SHOT
         );
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(alarmTime, pendingIntent);
-            alarmManager.setAlarmClock(info, pendingIntent);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
-        } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
-        }
+        setAlarmCompat(alarmTime, pendingIntent, context);
 
         if (alarm.isSnoozeEnabled()) {
-            AlarmUtils.setSnoozeAlarms(alarm, context);
+            setSnoozeAlarms(alarm, context);
         }
+
+        scheduleNotification(alarmTime, alarm, context);
     }
 
     private static void setSnoozeAlarms(Alarm alarm, Context context) {
@@ -58,8 +53,6 @@ public class AlarmUtils {
             int id = snoozeAlarm.getId();
 
             long alarmTime = AlarmUtils.findNextAlarmTime(new Alarm(snoozeAlarm.getHour(), snoozeAlarm.getMinute()));
-
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
             Intent intent = new Intent(context, AlarmActivity.class);
             intent.putExtra("id", id);
@@ -71,14 +64,21 @@ public class AlarmUtils {
                     PendingIntent.FLAG_ONE_SHOT
             );
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(alarmTime, pendingIntent);
-                alarmManager.setAlarmClock(info, pendingIntent);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
-            } else {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
-            }
+            setAlarmCompat(alarmTime, pendingIntent, context);
+        }
+    }
+
+    //Exact alarm setting is different on several versions of android.
+    private static void setAlarmCompat(long time, PendingIntent pendingIntent, Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(time, pendingIntent);
+            alarmManager.setAlarmClock(info, pendingIntent);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+        } else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
         }
     }
 
@@ -105,7 +105,8 @@ public class AlarmUtils {
                     //If the alarm should fire on the current day but the time has passed,
                     //decrease the count so the loop will come back to the current day if there
                     //are no other days this alarm should fire.
-                    if (currentDay == (idx + 1) && System.currentTimeMillis() > alarmTime.getTimeInMillis()) {
+                    if (currentDay == (idx + 1) &&
+                            System.currentTimeMillis() > alarmTime.getTimeInMillis()) {
                         count--;
                     } else {
                         break;
@@ -131,7 +132,15 @@ public class AlarmUtils {
                 PendingIntent.FLAG_ONE_SHOT
         );
 
+        Intent serviceIntent = new Intent(context, NotificationService.class);
+        PendingIntent pendingServiceIntent = PendingIntent.getService(
+                context,
+                alarm.getId(),
+                serviceIntent,
+                PendingIntent.FLAG_ONE_SHOT);
+
         alarmManager.cancel(pendingIntent);
+        alarmManager.cancel(pendingServiceIntent);
         if (alarm.isSnoozeEnabled()) {
             AlarmUtils.cancelSnoozeAlarms(alarm, context);
         }
@@ -298,5 +307,31 @@ public class AlarmUtils {
         }
         realm.commitTransaction();
         realm.close();
+    }
+
+    private static void scheduleNotification(long alarmTime, Alarm alarm, Context context) {
+        Intent intent = new Intent(context, NotificationService.class);
+        intent.putExtra("id", alarm.getId());
+
+        PendingIntent pendingIntent = PendingIntent.getService(context,
+                alarm.getId(),
+                intent,
+                0);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        //todo: replace with dynamic number of minutes set by the user.
+        alarmTime -= 5 * 60 * 1000;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
+        } else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
+        }
+    }
+
+    public static void cancelNotification(int id, Context context) {
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.cancel(id);
     }
 }

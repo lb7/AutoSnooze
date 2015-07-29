@@ -11,8 +11,11 @@ import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -46,46 +49,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
     }
 
     @Override
-    public void onBindViewHolder(final AlarmViewHolder alarmViewHolder, final int i) {
+    public void onBindViewHolder(final AlarmViewHolder alarmVH, final int i) {
         final Alarm alarm = alarmList.get(i);
-        alarmViewHolder.timeView.setText(AlarmUtils.printAlarm(alarm));
-        alarmViewHolder.daysView.setText(AlarmUtils.printDays(alarm, context.getResources()));
+        alarmVH.timeView.setText(AlarmUtils.printAlarm(alarm));
+        alarmVH.daysView.setText(AlarmUtils.printDays(alarm, context.getResources()));
 
-        alarmViewHolder.toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                realm.beginTransaction();
-                alarm.setEnabled(isChecked);
-                realm.commitTransaction();
+        alarmVH.toggle.setChecked(alarm.isEnabled());
 
-                if (isChecked) {
-                    AlarmUtils.setAlarm(alarm, context);
-                } else {
-                    AlarmUtils.cancelAlarm(alarm, context);
-                }
-            }
-        });
-        alarmViewHolder.toggle.setChecked(alarm.isEnabled());
-
-        alarmViewHolder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlarmUtils.cancelAlarm(alarm, context);
-
-                realm.beginTransaction();
-                alarm.removeFromRealm();
-                realm.commitTransaction();
-
-                int idx = alarmViewHolder.getAdapterPosition();
-
-                alarmList.remove(idx);
-                notifyItemRemoved(idx);
-
-                Snackbar.make(v.getRootView().findViewById(R.id.coordinator), "Alarm deleted", Snackbar.LENGTH_LONG).show();
-            }
-        });
-
-        /*alarmViewHolder.container.setOnClickListener(new View.OnClickListener() {
+        /*alarmVH.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.expand);
@@ -102,7 +73,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
 
     void addItem(Alarm alarm) {
         alarmList.add(alarm);
-        AlarmUtils.setAlarm(alarm, context);
+        if (alarm.isEnabled()) {
+            AlarmUtils.setAlarm(alarm, context);
+        }
         notifyDataSetChanged();
     }
 
@@ -113,7 +86,42 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
         notifyDataSetChanged();
     }
 
-    public static class AlarmViewHolder extends RecyclerView.ViewHolder {
+    List<Alarm> getDataSet() {
+        return alarmList;
+    }
+
+    void clearDataSet() {
+        for (Alarm alarm : alarmList) {
+            AlarmUtils.cancelAlarm(alarm, context);
+
+            realm.beginTransaction();
+            alarm.removeFromRealm();
+            realm.commitTransaction();
+        }
+        alarmList.clear();
+        notifyDataSetChanged();
+    }
+
+    void generateTestData() {
+        for (int idx = 0; idx < 50; idx++) {
+            Random random = new Random();
+            int hour = random.nextInt(23);
+            int minute = random.nextInt(59);
+
+            realm.beginTransaction();
+
+            Alarm alarm = realm.createObject(Alarm.class);
+            alarm.setHour(hour);
+            alarm.setMinute(minute);
+            alarm.setEnabled(false);
+
+            realm.commitTransaction();
+            addItem(alarm);
+        }
+        refresh();
+    }
+
+    class AlarmViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.text_time)     protected TextView timeView;
         @Bind(R.id.text_days)     protected TextView daysView;
         @Bind(R.id.toggle)        protected Switch toggle;
@@ -123,6 +131,46 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
         public AlarmViewHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
+
+            toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (buttonView.isPressed()) {
+                        Alarm alarm = alarmList.get(getAdapterPosition());
+
+                        realm.beginTransaction();
+                        alarm.setEnabled(isChecked);
+                        realm.commitTransaction();
+
+                        if (isChecked) {
+                            AlarmUtils.setAlarm(alarm, context);
+                        } else {
+                            AlarmUtils.cancelAlarm(alarm, context);
+                            AlarmUtils.cancelNotification(alarm.getId(), context);
+                        }
+                    }
+                }
+            });
+
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(@NotNull View v) {
+                    Alarm alarm = alarmList.get(getAdapterPosition());
+                    AlarmUtils.cancelAlarm(alarm, context);
+                    AlarmUtils.cancelNotification(alarm.getId(), context);
+
+                    realm.beginTransaction();
+                    alarm.removeFromRealm();
+                    realm.commitTransaction();
+
+                    int idx = getAdapterPosition();
+
+                    alarmList.remove(idx);
+                    notifyItemRemoved(idx);
+
+                    Snackbar.make(v.getRootView().findViewById(R.id.coordinator), "Alarm deleted", Snackbar.LENGTH_LONG).show();
+                }
+            });
         }
     }
 }

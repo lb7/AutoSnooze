@@ -44,6 +44,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="lbaker.app.autosnooze.MainActivity" />
         </activity>
+
+        <service android:name="lbaker.app.autosnooze.NotificationService"/>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="9af021fc656beb920d92261782336cc275dc5aab" />

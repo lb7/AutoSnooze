@@ -18,6 +18,8 @@ import com.crashlytics.android.Crashlytics;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -31,14 +33,17 @@ public class MainActivity extends AppCompatActivity {
     private Realm realm;
     private RecyclerAdapter recyclerAdapter;
 
+    @Bind(R.id.recycler) public RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
+        ButterKnife.bind(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         recyclerView.setHasFixedSize(true);
@@ -73,6 +78,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        scrollToLocation(getIntent());
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         realm.close();
@@ -93,6 +104,12 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch (id) {
+            case R.id.action_test_data:
+                recyclerAdapter.generateTestData();
+                break;
+            case R.id.action_clear_data:
+                recyclerAdapter.clearDataSet();
+                break;
             default:
                 break;
         }
@@ -133,8 +150,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        scrollToLocation(intent);
+    }
+
     private void createTimePickerDialog() {
         DialogFragment timePickerFragment = new TimePickerFragment();
         timePickerFragment.show(getSupportFragmentManager(), "timePicker");
     }
+
+    private void scrollToLocation(Intent intent) {
+        if (intent.getBooleanExtra("fromNotification", false)) {
+            LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+            List<Alarm> alarms = recyclerAdapter.getDataSet();
+
+            for (int idx = 0; idx < alarms.size(); idx++) {
+                if (intent.getIntExtra("id", 0) == alarms.get(idx).getId()) {
+                    layoutManager.scrollToPositionWithOffset(idx, 0);
+                    break;
+                }
+            }
+        }
+    }
+
+
 }

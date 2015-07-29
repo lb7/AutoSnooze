@@ -3,4 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+
+    <item android:id="@+id/action_test_data"
+        android:title="Generate Test Data"
+        app:showAsAction="never"/>
+    <item android:id="@+id/action_clear_data"
+        android:title="Clear Data"
+        app:showAsAction="never"/>
 </menu>
