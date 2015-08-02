@@ -1,4 +1,4 @@
-package lbaker.app.autosnooze;
+package lbaker.app.autosnooze.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +23,11 @@ import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import lbaker.app.autosnooze.alarm.Alarm;
+import lbaker.app.autosnooze.R;
+import lbaker.app.autosnooze.adapter.RecyclerAdapter;
+import lbaker.app.autosnooze.ui.fragment.TimePickerFragment;
+import lbaker.app.autosnooze.ui.AlarmListItemDecoration;
 import lbaker.app.autosnooze.util.AlarmUtils;
 
 

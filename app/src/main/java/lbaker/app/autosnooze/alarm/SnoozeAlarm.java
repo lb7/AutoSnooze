@@ -1,4 +1,4 @@
-package lbaker.app.autosnooze;
+package lbaker.app.autosnooze.alarm;
 
 import io.realm.RealmObject;
 

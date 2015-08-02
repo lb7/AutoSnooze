@@ -1,4 +1,4 @@
-package lbaker.app.autosnooze;
+package lbaker.app.autosnooze.ui.activity;
 
 import android.content.Context;
 import android.media.AudioAttributes;
@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import io.realm.Realm;
+import lbaker.app.autosnooze.alarm.Alarm;
+import lbaker.app.autosnooze.R;
 import lbaker.app.autosnooze.util.AlarmUtils;
 
 

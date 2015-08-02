@@ -1,4 +1,4 @@
-package lbaker.app.autosnooze;
+package lbaker.app.autosnooze.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +18,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import lbaker.app.autosnooze.alarm.Alarm;
+import lbaker.app.autosnooze.R;
 import lbaker.app.autosnooze.util.AlarmUtils;
 
 

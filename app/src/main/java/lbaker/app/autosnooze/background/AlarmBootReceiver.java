@@ -1,4 +1,4 @@
-package lbaker.app.autosnooze;
+package lbaker.app.autosnooze.background;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.util.AlarmUtils;
 
 /**

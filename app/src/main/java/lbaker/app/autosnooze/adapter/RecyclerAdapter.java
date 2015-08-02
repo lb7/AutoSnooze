@@ -1,4 +1,4 @@
-package lbaker.app.autosnooze;
+package lbaker.app.autosnooze.adapter;
 
 import android.content.Context;
 import android.support.design.widget.Snackbar;
@@ -21,6 +21,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import lbaker.app.autosnooze.R;
+import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.util.AlarmUtils;
 
 /**
@@ -71,7 +73,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
         return alarmList.size();
     }
 
-    void addItem(Alarm alarm) {
+    public void addItem(Alarm alarm) {
         alarmList.add(alarm);
         if (alarm.isEnabled()) {
             AlarmUtils.setAlarm(alarm, context);
@@ -79,18 +81,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
         notifyDataSetChanged();
     }
 
-    void refresh() {
+    public void refresh() {
         RealmResults<Alarm> results = realm.allObjectsSorted(Alarm.class, "hour", true, "minute", true);
 
         alarmList = new ArrayList<>(results);
         notifyDataSetChanged();
     }
 
-    List<Alarm> getDataSet() {
+    public List<Alarm> getDataSet() {
         return alarmList;
     }
 
-    void clearDataSet() {
+    public void clearDataSet() {
         for (Alarm alarm : alarmList) {
             AlarmUtils.cancelAlarm(alarm, context);
 
@@ -102,7 +104,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
         notifyDataSetChanged();
     }
 
-    void generateTestData() {
+    public void generateTestData() {
         for (int idx = 0; idx < 50; idx++) {
             Random random = new Random();
             int hour = random.nextInt(23);

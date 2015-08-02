@@ -12,11 +12,11 @@ import java.util.Calendar;
 
 import io.realm.Realm;
 import io.realm.RealmList;
-import lbaker.app.autosnooze.Alarm;
-import lbaker.app.autosnooze.AlarmActivity;
-import lbaker.app.autosnooze.NotificationService;
+import lbaker.app.autosnooze.alarm.Alarm;
+import lbaker.app.autosnooze.background.NotificationService;
 import lbaker.app.autosnooze.R;
-import lbaker.app.autosnooze.SnoozeAlarm;
+import lbaker.app.autosnooze.alarm.SnoozeAlarm;
+import lbaker.app.autosnooze.ui.activity.AlarmActivity;
 
 public class AlarmUtils {
 

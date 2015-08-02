@@ -1,4 +1,4 @@
-package lbaker.app.autosnooze;
+package lbaker.app.autosnooze.ui;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -8,6 +8,8 @@ import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.View;
+
+import lbaker.app.autosnooze.R;
 
 /**
  * Created by Luke on 12/29/2014.

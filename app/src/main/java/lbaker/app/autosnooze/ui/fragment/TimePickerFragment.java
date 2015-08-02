@@ -1,4 +1,4 @@
-package lbaker.app.autosnooze;
+package lbaker.app.autosnooze.ui.fragment;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -9,6 +9,10 @@ import android.support.v4.app.DialogFragment;
 import android.widget.TimePicker;
 
 import java.util.Calendar;
+
+import lbaker.app.autosnooze.R;
+import lbaker.app.autosnooze.ui.activity.EditAlarmActivity;
+import lbaker.app.autosnooze.ui.activity.MainActivity;
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 

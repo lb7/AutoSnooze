@@ -1,4 +1,4 @@
-package lbaker.app.autosnooze;
+package lbaker.app.autosnooze.background;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -11,7 +11,10 @@ import android.support.v4.app.NotificationManagerCompat;
 import org.jetbrains.annotations.NotNull;
 
 import io.realm.Realm;
+import lbaker.app.autosnooze.alarm.Alarm;
+import lbaker.app.autosnooze.R;
 import lbaker.app.autosnooze.util.AlarmUtils;
+import lbaker.app.autosnooze.ui.activity.MainActivity;
 
 /**
  * Created by Luke on 7/20/2015.
