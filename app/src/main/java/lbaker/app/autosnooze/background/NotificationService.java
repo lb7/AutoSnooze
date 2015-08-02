@@ -11,10 +11,10 @@ import android.support.v4.app.NotificationManagerCompat;
 import org.jetbrains.annotations.NotNull;
 
 import io.realm.Realm;
-import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.R;
-import lbaker.app.autosnooze.util.AlarmUtils;
+import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.ui.activity.MainActivity;
+import lbaker.app.autosnooze.util.AlarmUtils;
 
 /**
  * Created by Luke on 7/20/2015.
@@ -41,16 +41,34 @@ public class NotificationService extends Service {
                 .putExtra("fromNotification", true)
                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        PendingIntent actionPendingIntent = PendingIntent.getActivity(getApplicationContext(),
+        PendingIntent actionPendingIntent = PendingIntent.getActivity(
+                getApplicationContext(),
                 (int) (System.currentTimeMillis() / 1000),
                 actionIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
+        Intent cancelAlarmIntent = new Intent(getApplicationContext(), CancelAlarmService.class)
+                .putExtra("id", id);
+
+        PendingIntent cancelAlarmPendingIntent = PendingIntent.getService(
+                getApplicationContext(),
+                0,
+                cancelAlarmIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        NotificationCompat.Action cancelAlarmAction = new NotificationCompat.Action(
+                R.drawable.ic_action_alarm_off,
+                "Cancel",
+                cancelAlarmPendingIntent
+        );
+
         Notification notification = new NotificationCompat.Builder(this)
                 .setContentTitle(getString(R.string.title_notification_upcoming))
                 .setContentText(AlarmUtils.printAlarm(alarm))
-                .setSmallIcon(R.drawable.notification_template_icon_bg)
+                .setSmallIcon(R.drawable.ic_alarm)
                 .setContentIntent(actionPendingIntent)
+                .addAction(cancelAlarmAction)
                 .build();
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);

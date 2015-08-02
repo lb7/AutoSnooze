@@ -321,7 +321,7 @@ public class AlarmUtils {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         //todo: replace with dynamic number of minutes set by the user.
-        alarmTime -= 5 * 60 * 1000;
+        alarmTime -= 60 * 60 * 1000;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
