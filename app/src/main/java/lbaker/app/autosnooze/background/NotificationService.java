@@ -69,6 +69,7 @@ public class NotificationService extends Service {
                 .setSmallIcon(R.drawable.ic_alarm)
                 .setContentIntent(actionPendingIntent)
                 .addAction(cancelAlarmAction)
+                .setOngoing(true)
                 .build();
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
