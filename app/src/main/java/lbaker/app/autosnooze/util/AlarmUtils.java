@@ -4,18 +4,20 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 
 import java.util.Calendar;
 
 import io.realm.Realm;
 import io.realm.RealmList;
-import lbaker.app.autosnooze.alarm.Alarm;
-import lbaker.app.autosnooze.background.NotificationService;
 import lbaker.app.autosnooze.R;
+import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.alarm.SnoozeAlarm;
+import lbaker.app.autosnooze.background.NotificationService;
 import lbaker.app.autosnooze.ui.activity.AlarmActivity;
 
 public class AlarmUtils {
@@ -43,7 +45,11 @@ public class AlarmUtils {
             setSnoozeAlarms(alarm, context);
         }
 
-        scheduleNotification(alarmTime, alarm, context);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        if (preferences.getBoolean("pref_key_notifications_enabled", true)) {
+            scheduleNotification(alarmTime, alarm, context);
+        }
     }
 
     private static void setSnoozeAlarms(Alarm alarm, Context context) {
