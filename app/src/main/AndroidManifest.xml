@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="lbaker.app.autosnooze"
-    android:installLocation="auto">
+    android:installLocation="auto" >
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".ui.activity.MainActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,9 +25,9 @@
         </activity>
         <activity
             android:name=".ui.activity.AlarmActivity"
+            android:excludeFromRecents="true"
             android:label="@string/title_activity_alarm"
-            android:showOnLockScreen="true"
-            android:excludeFromRecents="true">
+            android:showOnLockScreen="true" >
         </activity>
 
         <receiver android:name=".background.AlarmBootReceiver" >
@@ -45,14 +45,21 @@
                 android:value=".ui.activity.MainActivity" />
         </activity>
 
-        <service android:name=".background.NotificationService"/>
-
-        <service android:name=".background.CancelAlarmService"/>
+        <service android:name=".background.NotificationService" />
+        <service android:name=".background.CancelAlarmService" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="9af021fc656beb920d92261782336cc275dc5aab" />
-    </application>
 
+        <activity
+            android:name=".ui.activity.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".ui.activity.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="lbaker.app.autosnooze.ui.activity.MainActivity" />
+        </activity>
+    </application>
 
 </manifest>
