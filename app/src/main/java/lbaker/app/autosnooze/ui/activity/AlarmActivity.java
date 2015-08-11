@@ -1,6 +1,5 @@
 package lbaker.app.autosnooze.ui.activity;
 
-import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.Ringtone;
@@ -8,8 +7,8 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.os.Vibrator;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -26,40 +25,21 @@ public class AlarmActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = AlarmActivity.class.getSimpleName();
 
-    private PowerManager.WakeLock wakeLock;
     private Ringtone ringtone;
     private Vibrator vibrator;
     private AudioManager audioManager;
 
-    private int originalVolume;
+    //private int originalVolume;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
 
-        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK
-                        | PowerManager.ACQUIRE_CAUSES_WAKEUP
-                        | PowerManager.ON_AFTER_RELEASE,
-                        AlarmActivity.class.getSimpleName());
-
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
                 | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
                 | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-        if (wakeLock != null && !wakeLock.isHeld()) wakeLock.acquire();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (wakeLock != null && !wakeLock.isHeld()) wakeLock.acquire();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         Uri alarmURI = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         ringtone = RingtoneManager.getRingtone(getApplicationContext(), alarmURI);
@@ -73,8 +53,8 @@ public class AlarmActivity extends AppCompatActivity {
         }
 
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-        originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
-        
+        //originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
+
         // TODO: 8/10/2015 add setting for user specified volume. Global and per alarm.
         //int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
         //audioManager.setStreamVolume(AudioManager.STREAM_ALARM, (int) (maxVolume * 0.75), 0);
@@ -87,9 +67,10 @@ public class AlarmActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        wakeLock.release();
+    protected void onStart() {
+        super.onStart();
+
+
     }
 
     @Override
@@ -101,7 +82,7 @@ public class AlarmActivity extends AppCompatActivity {
         int id = getIntent().getIntExtra("id", 0);
 
         //todo: add support for resetting snooze alarms
-        Realm realm = Realm.getInstance(AlarmActivity.this);
+        Realm realm = Realm.getInstance(getApplicationContext());
         Alarm alarm = realm.where(Alarm.class)
                 .equalTo("id", id)
                 .findAll()
@@ -118,7 +99,10 @@ public class AlarmActivity extends AppCompatActivity {
         realm.close();
         ringtone.stop();
         vibrator.cancel();
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
+
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(getApplicationContext());
+        notificationManager.cancel(alarm.getId());
     }
 
     @Override
