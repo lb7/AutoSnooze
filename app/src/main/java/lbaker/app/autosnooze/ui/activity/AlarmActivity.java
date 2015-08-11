@@ -17,8 +17,8 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import io.realm.Realm;
-import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.R;
+import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.util.AlarmUtils;
 
 
@@ -66,15 +66,18 @@ public class AlarmActivity extends AppCompatActivity {
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AudioAttributes aa = new AudioAttributes.Builder().setContentType(AudioAttributes.USAGE_ALARM).build();
+            AudioAttributes aa = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .build();
             ringtone.setAudioAttributes(aa);
         }
 
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-        originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-
-        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (maxVolume * 0.75), 0);
+        originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
+        
+        // TODO: 8/10/2015 add setting for user specified volume. Global and per alarm.
+        //int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
+        //audioManager.setStreamVolume(AudioManager.STREAM_ALARM, (int) (maxVolume * 0.75), 0);
 
         ringtone.play();
 
