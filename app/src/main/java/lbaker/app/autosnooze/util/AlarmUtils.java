@@ -19,6 +19,7 @@ import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.alarm.SnoozeAlarm;
 import lbaker.app.autosnooze.background.NotificationService;
 import lbaker.app.autosnooze.ui.activity.AlarmActivity;
+import lbaker.app.autosnooze.ui.preference.NotificationIntervalPreference;
 
 public class AlarmUtils {
 
@@ -326,8 +327,10 @@ public class AlarmUtils {
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        //todo: replace with dynamic number of minutes set by the user.
-        alarmTime -= 60 * 60 * 1000;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        alarmTime -= preferences.getInt(
+                "pref_key_notifications_interval", NotificationIntervalPreference.DEFAULT_VALUE)
+                * 60 * 1000;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
