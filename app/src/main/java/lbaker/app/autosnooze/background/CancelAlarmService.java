@@ -43,6 +43,7 @@ public class CancelAlarmService extends Service {
 
         realm.close();
 
+        stopSelf();
         return START_NOT_STICKY;
     }
 }

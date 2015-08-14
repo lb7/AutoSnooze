@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 import lbaker.app.autosnooze.R;
 import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.util.AlarmUtils;
@@ -69,8 +70,6 @@ public class AlarmActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-
     }
 
     @Override
@@ -81,35 +80,42 @@ public class AlarmActivity extends AppCompatActivity {
         //onPause and onStop being called twice when the screen is locked.
         int id = getIntent().getIntExtra("id", 0);
 
-        //todo: add support for resetting snooze alarms
         Realm realm = Realm.getInstance(getApplicationContext());
-        Alarm alarm = realm.where(Alarm.class)
+        RealmResults<Alarm> realmResults = realm.where(Alarm.class)
                 .equalTo("id", id)
-                .findAll()
-                .first();
+                .findAll();
 
-        if (alarm.isRepeating()) {
-            AlarmUtils.setAlarm(alarm, getApplicationContext());
-        } else {
-            realm.beginTransaction();
-            alarm.setEnabled(false);
-            realm.commitTransaction();
+        //this alarm is a regular alarm and should be acted on. Snooze alarms require no action.
+        //At least as of now.
+        if (!realmResults.isEmpty()) {
+            Alarm alarm = realmResults.first();
+
+            if (alarm.isRepeating()) {
+                AlarmUtils.setAlarm(alarm, getApplicationContext());
+            } else {
+                realm.beginTransaction();
+                alarm.setEnabled(false);
+                realm.commitTransaction();
+            }
+
+            NotificationManagerCompat notificationManager =
+                    NotificationManagerCompat.from(getApplicationContext());
+            notificationManager.cancel(alarm.getId());
         }
 
         realm.close();
         ringtone.stop();
         vibrator.cancel();
 
-        NotificationManagerCompat notificationManager =
-                NotificationManagerCompat.from(getApplicationContext());
-        notificationManager.cancel(alarm.getId());
+
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        //Destroys activity on back button press. The user doesn't need to
+        //Destroys activity on back button or home button press. The user doesn't need to
         //return to the AlarmActivity.
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
+        //TODO: 8/13/2015 Test whether this works for home button or not
+        if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_HOME) {
             finish();
         }
         return super.onKeyDown(keyCode, event);
