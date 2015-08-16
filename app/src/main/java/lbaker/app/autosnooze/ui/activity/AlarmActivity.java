@@ -1,16 +1,15 @@
 package lbaker.app.autosnooze.ui.activity;
 
 import android.media.AudioAttributes;
-import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -28,7 +27,7 @@ public class AlarmActivity extends AppCompatActivity {
 
     private Ringtone ringtone;
     private Vibrator vibrator;
-    private AudioManager audioManager;
+    //private AudioManager audioManager;
 
     //private int originalVolume;
 
@@ -53,13 +52,12 @@ public class AlarmActivity extends AppCompatActivity {
             ringtone.setAudioAttributes(aa);
         }
 
-        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        //audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         //originalVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
 
         // TODO: 8/10/2015 add setting for user specified volume. Global and per alarm.
         //int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
         //audioManager.setStreamVolume(AudioManager.STREAM_ALARM, (int) (maxVolume * 0.75), 0);
-
         ringtone.play();
 
         if (vibrator.hasVibrator()) {
@@ -70,6 +68,17 @@ public class AlarmActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    protected void onPause() {
+        super.onPause();
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        if (Build.VERSION.SDK_INT >= 20 && powerManager.isInteractive() ||
+                powerManager.isScreenOn()) {
+            finish();
+        }
     }
 
     @Override
@@ -108,17 +117,6 @@ public class AlarmActivity extends AppCompatActivity {
         vibrator.cancel();
 
 
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        //Destroys activity on back button or home button press. The user doesn't need to
-        //return to the AlarmActivity.
-        //TODO: 8/13/2015 Test whether this works for home button or not
-        if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_HOME) {
-            finish();
-        }
-        return super.onKeyDown(keyCode, event);
     }
 
     @Override
