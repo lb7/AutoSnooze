@@ -9,8 +9,10 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 import java.util.Calendar;
+import java.util.Random;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -24,6 +26,7 @@ import lbaker.app.autosnooze.ui.preference.NotificationIntervalPreference;
 public class AlarmUtils {
 
     public static final int NUM_DAYS_WEEK = 7;
+    public static final String LOG_TAG = "AlarmUtils";
 
     public static void setAlarm(Alarm alarm, Context context) {
         int id = alarm.getId();
@@ -151,6 +154,31 @@ public class AlarmUtils {
         if (alarm.isSnoozeEnabled()) {
             AlarmUtils.cancelSnoozeAlarms(alarm, context);
         }
+    }
+
+    public static void createSnoozeAlarms(Alarm alarm, Context context) {
+        Realm realm = Realm.getInstance(context);
+
+        Calendar alarmTime = Calendar.getInstance();
+        alarmTime.set(Calendar.HOUR_OF_DAY, alarm.getHour());
+        alarmTime.set(Calendar.MINUTE, alarm.getMinute());
+
+        realm.beginTransaction();
+        RealmList<SnoozeAlarm> snoozeAlarms = alarm.getSnoozeAlarms();
+
+        for (int i = 0; i < alarm.getSnoozeQuantity(); i++) {
+            alarmTime.add(Calendar.MINUTE, alarm.getSnoozeDuration());
+
+            SnoozeAlarm snoozeAlarm = realm.createObject(SnoozeAlarm.class);
+            snoozeAlarm.setHour(alarmTime.get(Calendar.HOUR_OF_DAY));
+            snoozeAlarm.setMinute(alarmTime.get(Calendar.MINUTE));
+            snoozeAlarm.setId(generateId());
+            Log.d(LOG_TAG, String.valueOf(snoozeAlarm.getId()));
+
+            snoozeAlarms.add(snoozeAlarm);
+        }
+        realm.commitTransaction();
+        realm.close();
     }
 
     public static void cancelSnoozeAlarms(Alarm alarm, Context context) {
@@ -292,30 +320,6 @@ public class AlarmUtils {
         return resources.getString(dayString);
     }
 
-    public static void createSnoozeAlarms(Alarm alarm, Context context) {
-        Realm realm = Realm.getInstance(context);
-
-        Calendar alarmTime = Calendar.getInstance();
-        alarmTime.set(Calendar.HOUR_OF_DAY, alarm.getHour());
-        alarmTime.set(Calendar.MINUTE, alarm.getMinute());
-
-        realm.beginTransaction();
-        RealmList<SnoozeAlarm> snoozeAlarms = alarm.getSnoozeAlarms();
-
-        for (int i = 0; i < alarm.getSnoozeQuantity(); i++) {
-            alarmTime.add(Calendar.MINUTE, alarm.getSnoozeDuration());
-
-            SnoozeAlarm snoozeAlarm = realm.createObject(SnoozeAlarm.class);
-            snoozeAlarm.setHour(alarmTime.get(Calendar.HOUR_OF_DAY));
-            snoozeAlarm.setMinute(alarmTime.get(Calendar.MINUTE));
-            snoozeAlarm.setId((int) System.currentTimeMillis() / 1000);
-
-            snoozeAlarms.add(snoozeAlarm);
-        }
-        realm.commitTransaction();
-        realm.close();
-    }
-
     private static void scheduleNotification(long alarmTime, Alarm alarm, Context context) {
         Intent intent = new Intent(context, NotificationService.class);
         intent.putExtra("id", alarm.getId());
@@ -342,5 +346,10 @@ public class AlarmUtils {
     public static void cancelNotification(int id, Context context) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.cancel(id);
+    }
+
+    // TODO: 8/16/2015 Check id for uniqueness. May not be necessary.
+    public static int generateId() {
+        return new Random().nextInt();
     }
 }
