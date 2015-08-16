@@ -23,12 +23,11 @@ import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmResults;
-import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.R;
 import lbaker.app.autosnooze.adapter.RecyclerAdapter;
-import lbaker.app.autosnooze.ui.fragment.TimePickerFragment;
+import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.ui.AlarmListItemDecoration;
-import lbaker.app.autosnooze.util.AlarmUtils;
+import lbaker.app.autosnooze.ui.fragment.TimePickerFragment;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -148,9 +147,9 @@ public class MainActivity extends AppCompatActivity {
 
                     realm.commitTransaction();
 
-                    if (alarm.isSnoozeEnabled()) {
+                    /*if (alarm.isSnoozeEnabled()) {
                         AlarmUtils.createSnoozeAlarms(alarm, getApplicationContext());
-                    }
+                    }*/
                     recyclerAdapter.addItem(alarm);
                 }
                 break;

@@ -9,7 +9,6 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
 
 import java.util.Calendar;
 import java.util.Random;
@@ -46,35 +45,13 @@ public class AlarmUtils {
         setAlarmCompat(alarmTime, pendingIntent, context);
 
         if (alarm.isSnoozeEnabled()) {
-            setSnoozeAlarms(alarm, context);
+            setSnoozeAlarms(alarm, alarmTime, context);
         }
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         if (preferences.getBoolean("pref_key_notifications_enabled", true)) {
             scheduleNotification(alarmTime, alarm, context);
-        }
-    }
-
-    private static void setSnoozeAlarms(Alarm alarm, Context context) {
-        RealmList<SnoozeAlarm> snoozeAlarms = alarm.getSnoozeAlarms();
-
-        for (SnoozeAlarm snoozeAlarm : snoozeAlarms) {
-            int id = snoozeAlarm.getId();
-
-            long alarmTime = AlarmUtils.findNextAlarmTime(new Alarm(snoozeAlarm.getHour(), snoozeAlarm.getMinute()));
-
-            Intent intent = new Intent(context, AlarmActivity.class);
-            intent.putExtra("id", id);
-
-            PendingIntent pendingIntent = PendingIntent.getActivity(
-                    context,
-                    id,
-                    intent,
-                    PendingIntent.FLAG_ONE_SHOT
-            );
-
-            setAlarmCompat(alarmTime, pendingIntent, context);
         }
     }
 
@@ -89,6 +66,99 @@ public class AlarmUtils {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent);
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+        }
+    }
+
+    public static void cancelAlarm(Alarm alarm, Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                context,
+                alarm.getId(),
+                intent,
+                PendingIntent.FLAG_ONE_SHOT
+        );
+
+        Intent serviceIntent = new Intent(context, NotificationService.class);
+        PendingIntent pendingServiceIntent = PendingIntent.getService(
+                context,
+                alarm.getId(),
+                serviceIntent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        alarmManager.cancel(pendingIntent);
+        alarmManager.cancel(pendingServiceIntent);
+        if (alarm.isSnoozeEnabled()) {
+            AlarmUtils.cancelSnoozeAlarms(alarm, context);
+        }
+    }
+
+    private static void createSnoozeAlarms(Alarm alarm, Context context) {
+        Realm realm = Realm.getInstance(context);
+
+        Calendar alarmTime = Calendar.getInstance();
+        //alarmTime.setTimeInMillis(parentAlarmTime);
+        alarmTime.set(Calendar.HOUR_OF_DAY, alarm.getHour());
+        alarmTime.set(Calendar.MINUTE, alarm.getMinute());
+
+        realm.beginTransaction();
+        RealmList<SnoozeAlarm> snoozeAlarms = alarm.getSnoozeAlarms();
+
+        for (int i = 0; i < alarm.getSnoozeQuantity(); i++) {
+            alarmTime.add(Calendar.MINUTE, alarm.getSnoozeDuration());
+
+            SnoozeAlarm snoozeAlarm = realm.createObject(SnoozeAlarm.class);
+            snoozeAlarm.setHour(alarmTime.get(Calendar.HOUR_OF_DAY));
+            snoozeAlarm.setMinute(alarmTime.get(Calendar.MINUTE));
+            snoozeAlarm.setId(generateId());
+
+            snoozeAlarms.add(snoozeAlarm);
+        }
+        realm.commitTransaction();
+        realm.close();
+    }
+
+    private static void setSnoozeAlarms(Alarm alarm, long parentAlarmTime, Context context) {
+        createSnoozeAlarms(alarm, context);
+
+        Calendar alarmTime = Calendar.getInstance();
+        alarmTime.setTimeInMillis(parentAlarmTime);
+
+        RealmList<SnoozeAlarm> snoozeAlarms = alarm.getSnoozeAlarms();
+
+        for (SnoozeAlarm snoozeAlarm : snoozeAlarms) {
+            int id = snoozeAlarm.getId();
+
+            Intent intent = new Intent(context, AlarmActivity.class);
+            intent.putExtra("id", id);
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                    context,
+                    id,
+                    intent,
+                    PendingIntent.FLAG_ONE_SHOT
+            );
+
+            alarmTime.add(Calendar.MINUTE, alarm.getSnoozeDuration());
+            setAlarmCompat(alarmTime.getTimeInMillis(), pendingIntent, context);
+        }
+    }
+
+    public static void cancelSnoozeAlarms(Alarm alarm, Context context) {
+        RealmList<SnoozeAlarm> snoozeAlarms = alarm.getSnoozeAlarms();
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        for (SnoozeAlarm snoozeAlarm : snoozeAlarms) {
+            Intent intent = new Intent(context, AlarmActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                    context,
+                    snoozeAlarm.getId(),
+                    intent,
+                    PendingIntent.FLAG_ONE_SHOT
+            );
+
+            alarmManager.cancel(pendingIntent);
         }
     }
 
@@ -130,73 +200,6 @@ public class AlarmUtils {
             }
         }
         return alarmTime.getTimeInMillis();
-    }
-
-    public static void cancelAlarm(Alarm alarm, Context context) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(
-                context,
-                alarm.getId(),
-                intent,
-                PendingIntent.FLAG_ONE_SHOT
-        );
-
-        Intent serviceIntent = new Intent(context, NotificationService.class);
-        PendingIntent pendingServiceIntent = PendingIntent.getService(
-                context,
-                alarm.getId(),
-                serviceIntent,
-                PendingIntent.FLAG_ONE_SHOT);
-
-        alarmManager.cancel(pendingIntent);
-        alarmManager.cancel(pendingServiceIntent);
-        if (alarm.isSnoozeEnabled()) {
-            AlarmUtils.cancelSnoozeAlarms(alarm, context);
-        }
-    }
-
-    public static void createSnoozeAlarms(Alarm alarm, Context context) {
-        Realm realm = Realm.getInstance(context);
-
-        Calendar alarmTime = Calendar.getInstance();
-        alarmTime.set(Calendar.HOUR_OF_DAY, alarm.getHour());
-        alarmTime.set(Calendar.MINUTE, alarm.getMinute());
-
-        realm.beginTransaction();
-        RealmList<SnoozeAlarm> snoozeAlarms = alarm.getSnoozeAlarms();
-
-        for (int i = 0; i < alarm.getSnoozeQuantity(); i++) {
-            alarmTime.add(Calendar.MINUTE, alarm.getSnoozeDuration());
-
-            SnoozeAlarm snoozeAlarm = realm.createObject(SnoozeAlarm.class);
-            snoozeAlarm.setHour(alarmTime.get(Calendar.HOUR_OF_DAY));
-            snoozeAlarm.setMinute(alarmTime.get(Calendar.MINUTE));
-            snoozeAlarm.setId(generateId());
-            Log.d(LOG_TAG, String.valueOf(snoozeAlarm.getId()));
-
-            snoozeAlarms.add(snoozeAlarm);
-        }
-        realm.commitTransaction();
-        realm.close();
-    }
-
-    public static void cancelSnoozeAlarms(Alarm alarm, Context context) {
-        RealmList<SnoozeAlarm> snoozeAlarms = alarm.getSnoozeAlarms();
-
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-        for (SnoozeAlarm snoozeAlarm : snoozeAlarms) {
-            Intent intent = new Intent(context, AlarmActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(
-                    context,
-                    snoozeAlarm.getId(),
-                    intent,
-                    PendingIntent.FLAG_ONE_SHOT
-            );
-
-            alarmManager.cancel(pendingIntent);
-        }
     }
 
     public static String printAlarm(int alarmHour, int alarmMinute) {
