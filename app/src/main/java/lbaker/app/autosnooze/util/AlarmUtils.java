@@ -84,7 +84,7 @@ public class AlarmUtils {
                 context,
                 alarm.getId(),
                 serviceIntent,
-                PendingIntent.FLAG_ONE_SHOT);
+                0);
 
         alarmManager.cancel(pendingIntent);
         alarmManager.cancel(pendingServiceIntent);
@@ -97,7 +97,6 @@ public class AlarmUtils {
         Realm realm = Realm.getInstance(context);
 
         Calendar alarmTime = Calendar.getInstance();
-        //alarmTime.setTimeInMillis(parentAlarmTime);
         alarmTime.set(Calendar.HOUR_OF_DAY, alarm.getHour());
         alarmTime.set(Calendar.MINUTE, alarm.getMinute());
 
@@ -323,6 +322,7 @@ public class AlarmUtils {
         return resources.getString(dayString);
     }
 
+    // TODO: 8/16/2015 Add notification support for snooze alarms.
     private static void scheduleNotification(long alarmTime, Alarm alarm, Context context) {
         Intent intent = new Intent(context, NotificationService.class);
         intent.putExtra("id", alarm.getId());
@@ -336,7 +336,8 @@ public class AlarmUtils {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         alarmTime -= preferences.getInt(
-                "pref_key_notifications_interval", NotificationIntervalPreference.DEFAULT_VALUE)
+                context.getString(R.string.pref_key_notifications_interval),
+                NotificationIntervalPreference.DEFAULT_VALUE)
                 * 60 * 1000;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
