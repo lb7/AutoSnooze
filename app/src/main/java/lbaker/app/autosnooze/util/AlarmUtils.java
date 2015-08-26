@@ -323,12 +323,14 @@ public class AlarmUtils {
     }
 
     // TODO: 8/16/2015 Add notification support for snooze alarms.
-    private static void scheduleNotification(long alarmTime, Alarm alarm, Context context) {
+    public static void scheduleNotification(long alarmTime, Alarm alarm, Context context) {
         Intent intent = new Intent(context, NotificationService.class);
-        intent.putExtra("id", alarm.getId());
+        int id = alarm.getId();
+
+        intent.putExtra("id", id);
 
         PendingIntent pendingIntent = PendingIntent.getService(context,
-                alarm.getId(),
+                id,
                 intent,
                 0);
 
