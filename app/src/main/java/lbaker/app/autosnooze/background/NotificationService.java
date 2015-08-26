@@ -74,6 +74,7 @@ public class NotificationService extends Service {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(id, notification);
+        stopSelf();
         return START_NOT_STICKY;
     }
 }

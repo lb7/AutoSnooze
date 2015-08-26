@@ -128,7 +128,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
         @Bind(R.id.text_days)     protected TextView daysView;
         @Bind(R.id.toggle)        protected Switch toggle;
         @Bind(R.id.button_delete) protected ImageButton delete;
-        @Bind(R.id.container)     protected View container;
+        //@Bind(R.id.container)     protected View container;
 
         public AlarmViewHolder(View v) {
             super(v);
