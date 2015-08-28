@@ -18,9 +18,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
-import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.R;
+import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.util.AlarmUtils;
+
+// TODO: 8/25/2015 Add option to pick alert tone.
 
 
 public class EditAlarmActivity extends AppCompatActivity {

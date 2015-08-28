@@ -13,6 +13,7 @@ import lbaker.app.autosnooze.R;
 
 /**
  * Created by Luke on 12/29/2014.
+ *
  */
 public class AlarmListItemDecoration extends RecyclerView.ItemDecoration {
     private static final String LOG_TAG = "AlarmListItemDecoration";
@@ -20,6 +21,7 @@ public class AlarmListItemDecoration extends RecyclerView.ItemDecoration {
     private Drawable divider;
     private int dividerHeightPX;
 
+    @SuppressWarnings("deprecation")
     public AlarmListItemDecoration(Resources resources) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             divider = resources.getDrawable(R.drawable.divider, null);

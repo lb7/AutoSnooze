@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--todo: default snooze duration, quantity?
+    todo: vibration toggle
+    todo: ringtone toggle?
+    todo: alarm volume slider-->
+
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
         android:title="@string/pref_notifications_title">
