@@ -3,9 +3,11 @@ package lbaker.app.autosnooze.ui.fragment;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.view.ContextThemeWrapper;
 import android.widget.TimePicker;
 
 import java.util.Calendar;
@@ -24,8 +26,14 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
 
-        return new TimePickerDialog(getActivity(), R.style.AppTheme_TimePicker, this, hour,
-                minute, false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return new TimePickerDialog(getActivity(), R.style.AppTheme_TimePicker, this, hour,
+                    minute, false);
+        } else {
+            ContextThemeWrapper themeWrapper = new ContextThemeWrapper(getActivity(),
+                    android.R.style.Theme_DeviceDefault_Light_Dialog);
+            return new TimePickerDialog(themeWrapper, this, hour, minute, false);
+        }
     }
 
     // Called twice on some versions of Android. Once when the "confirm" button is pushed and once
