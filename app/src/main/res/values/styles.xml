@@ -17,9 +17,14 @@
         <item name="colorAccent">@color/accent</item>
     </style>
 
+    <style name="AppTheme.TimePicker.Compat" parent="android:Theme.DeviceDefault.Light.Dialog">
+        <item name="colorPrimary">@android:color/holo_red_dark</item>
+        <item name="colorAccent">@android:color/black</item>
+    </style>
 
 
-    <style name="DebugColors" parent="Theme.AppCompat.Light.Dialog">
+
+    <style name="DebugColors" parent="android:Theme.DeviceDefault.Light.Dialog">
 
         <!-- System colors -->
         <item name="android:colorForeground">#440000</item>

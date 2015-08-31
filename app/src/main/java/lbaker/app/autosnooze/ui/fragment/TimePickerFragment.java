@@ -31,7 +31,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
                     minute, false);
         } else {
             ContextThemeWrapper themeWrapper = new ContextThemeWrapper(getActivity(),
-                    android.R.style.Theme_DeviceDefault_Light_Dialog);
+                    R.style.AppTheme_TimePicker_Compat);
             return new TimePickerDialog(themeWrapper, this, hour, minute, false);
         }
     }
