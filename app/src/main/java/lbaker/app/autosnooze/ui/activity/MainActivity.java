@@ -13,14 +13,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.crashlytics.android.Crashlytics;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import lbaker.app.autosnooze.R;
@@ -42,12 +39,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
+        //Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ViewCompat.setElevation(toolbar, 10);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         recyclerView.setHasFixedSize(true);
@@ -63,9 +63,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerAdapter = new RecyclerAdapter(alarmList, realm, getApplicationContext());
         recyclerView.addItemDecoration(new AlarmListItemDecoration(getResources()));
         recyclerView.setAdapter(recyclerAdapter);
-
-        setSupportActionBar(toolbar);
-        ViewCompat.setElevation(toolbar, 10);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

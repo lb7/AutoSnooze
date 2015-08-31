@@ -66,11 +66,6 @@ public class AlarmActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
     @SuppressWarnings("deprecation")
     protected void onPause() {
         super.onPause();
