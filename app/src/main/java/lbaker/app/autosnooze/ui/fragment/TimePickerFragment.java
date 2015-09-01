@@ -14,7 +14,6 @@ import java.util.Calendar;
 
 import lbaker.app.autosnooze.R;
 import lbaker.app.autosnooze.ui.activity.EditAlarmActivity;
-import lbaker.app.autosnooze.ui.activity.MainActivity;
 import lbaker.app.autosnooze.util.AlarmUtils;
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog
@@ -48,7 +47,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
                     .putExtra("minute", minute)
                     .putExtra("id", AlarmUtils.generateId());
 
-            getActivity().startActivityForResult(intent, MainActivity.NEW_ALARM_REQUEST_CODE);
+            getActivity().startActivity(intent);
         }
     }
 }

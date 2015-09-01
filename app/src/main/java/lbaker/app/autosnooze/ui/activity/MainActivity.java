@@ -123,39 +123,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case NEW_ALARM_REQUEST_CODE:
-                if (resultCode == RESULT_OK) {
-                    realm.beginTransaction();
-
-                    Alarm alarm = realm.createObject(Alarm.class);
-                    alarm.setHour(data.getIntExtra("hour", 0));
-                    alarm.setMinute(data.getIntExtra("minute", 0));
-                    alarm.setId(data.getIntExtra("id", 0));
-                    alarm.setDays(data.getByteArrayExtra("days"));
-                    alarm.setRepeating(data.getBooleanExtra("repeat", false));
-                    alarm.setSnoozeDuration(data.getIntExtra("snoozeDuration", 0));
-                    alarm.setSnoozeQuantity(data.getIntExtra("snoozeQuantity", 0));
-                    alarm.setSnoozeEnabled(data.getBooleanExtra("snoozeEnabled", false));
-                    alarm.setEnabled(true);
-
-                    realm.commitTransaction();
-
-                    /*if (alarm.isSnoozeEnabled()) {
-                        AlarmUtils.createSnoozeAlarms(alarm, getApplicationContext());
-                    }*/
-                    recyclerAdapter.addItem(alarm);
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         scrollToLocation(intent);

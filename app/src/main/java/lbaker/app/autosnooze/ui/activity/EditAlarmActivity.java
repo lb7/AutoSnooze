@@ -18,6 +18,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import io.realm.Realm;
 import lbaker.app.autosnooze.R;
 import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.util.AlarmUtils;
@@ -102,15 +103,12 @@ public class EditAlarmActivity extends AppCompatActivity {
             if (editSnoozeQuantity.getText().toString().trim().length() == 0) {
                 editSnoozeQuantity.setError(getString(R.string.error_input_required));
             }
-            if (editSnoozeQuantity.getError() != null ||
-                    editSnoozeDuration.getError() != null) {
+            if (editSnoozeQuantity.getError() != null || editSnoozeDuration.getError() != null) {
                 return;
             }
             snoozeDuration = Integer.parseInt(editSnoozeDuration.getText().toString());
             snoozeQuantity = Integer.parseInt(editSnoozeQuantity.getText().toString());
         }
-
-        Intent result = new Intent();
 
         boolean repeat = false;
         byte[] days = new byte[AlarmUtils.NUM_DAYS_WEEK];
@@ -125,16 +123,25 @@ public class EditAlarmActivity extends AppCompatActivity {
             }
         }
 
-        result.putExtra("hour", hour)
-                .putExtra("minute", minute)
-                .putExtra("id", id)
-                .putExtra("snoozeDuration", snoozeDuration)
-                .putExtra("snoozeQuantity", snoozeQuantity)
-                .putExtra("days", days)
-                .putExtra("repeat", repeat)
-                .putExtra("snoozeEnabled", snoozeEnabled);
+        Realm realm = Realm.getInstance(getApplicationContext());
+        realm.beginTransaction();
 
-        setResult(RESULT_OK, result);
+        Alarm alarm = realm.createObject(Alarm.class);
+        alarm.setHour(hour);
+        alarm.setMinute(minute);
+        alarm.setId(id);
+        alarm.setDays(days);
+        alarm.setRepeating(repeat);
+        alarm.setSnoozeDuration(snoozeDuration);
+        alarm.setSnoozeQuantity(snoozeQuantity);
+        alarm.setSnoozeEnabled(snoozeEnabled);
+        alarm.setEnabled(true);
+
+        realm.commitTransaction();
+        realm.close();
+
+        AlarmUtils.setAlarm(alarm, getApplicationContext());
+
         finish();
     }
 

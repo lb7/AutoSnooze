@@ -62,7 +62,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.0.0'
     compile 'com.android.support:design:23.0.0'
 
-    compile 'io.realm:realm-android:0.82.0'
+    compile 'io.realm:realm-android:0.82.1'
     compile 'com.jakewharton:butterknife:7.0.0'
     compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
         transitive = true;
