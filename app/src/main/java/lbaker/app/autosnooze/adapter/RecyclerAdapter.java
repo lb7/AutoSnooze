@@ -1,6 +1,7 @@
 package lbaker.app.autosnooze.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import lbaker.app.autosnooze.R;
 import lbaker.app.autosnooze.alarm.Alarm;
+import lbaker.app.autosnooze.ui.activity.EditAlarmActivity;
 import lbaker.app.autosnooze.util.AlarmUtils;
 
 /**
@@ -128,7 +130,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
         @Bind(R.id.text_days)     protected TextView daysView;
         @Bind(R.id.toggle)        protected Switch toggle;
         @Bind(R.id.button_delete) protected ImageButton delete;
-        //@Bind(R.id.container)     protected View container;
+        @Bind(R.id.container)     protected View container;
 
         public AlarmViewHolder(View v) {
             super(v);
@@ -171,6 +173,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
                     notifyItemRemoved(idx);
 
                     Snackbar.make(v.getRootView().findViewById(R.id.coordinator), "Alarm deleted", Snackbar.LENGTH_LONG).show();
+                }
+            });
+
+            container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, EditAlarmActivity.class)
+                            .putExtra("id", alarmList.get(getAdapterPosition()).getId())
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
                 }
             });
         }

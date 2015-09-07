@@ -1,63 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-    android:id="@+id/container">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:id="@+id/container">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/text_time"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:textSize="40sp"
-                android:text="3:20 AM"
-                android:fontFamily="sans-serif-light" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/text_time"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:textSize="40sp"
+            android:text="3:20 AM"
+            android:fontFamily="sans-serif-light" />
 
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mon, Tue, Wed, Thu, Fri, Sat, Sun"
-                android:id="@+id/text_days"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mon, Tue, Wed, Thu, Fri, Sat, Sun"
+            tools:ignore="HardcodedText"
+            android:id="@+id/text_days"
             android:layout_alignTop="@+id/text_time"
             android:layout_alignStart="@+id/text_time"
+            android:layout_alignLeft="@+id/text_time"
             android:layout_marginTop="48dp"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"/>
     </RelativeLayout>
 
     <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="right">
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="right">
 
-            <ImageButton
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:text="Delete"
-                android:id="@+id/button_delete"
-                android:layout_gravity="right|center_vertical"
-                android:layout_marginRight="8dp"
-                android:src="@drawable/ic_delete"
-                android:background="#0000" />
+        <ImageButton
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="Delete"
+            tools:ignore="HardcodedText"
+            android:id="@+id/button_delete"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/ic_delete"
+            android:background="#0000" />
 
-            <Switch
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/toggle"
-                android:checked="true"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="16dp" />
-        </LinearLayout>
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/toggle"
+            android:checked="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="16dp" />
+    </LinearLayout>
 
 </LinearLayout>
 

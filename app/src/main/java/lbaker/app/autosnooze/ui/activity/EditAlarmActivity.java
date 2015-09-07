@@ -33,10 +33,15 @@ public class EditAlarmActivity extends AppCompatActivity {
     private int id;
 
     private boolean snoozeEnabled;
+    private boolean creatingAlarm;
 
+    @Bind(R.id.text_alarm)           TextView timeView;
     @Bind(R.id.text_snooze_duration) EditText editSnoozeDuration;
     @Bind(R.id.text_snooze_quantity) EditText editSnoozeQuantity;
     @Bind(R.id.check_snooze)         CheckBox checkSnooze;
+
+    private Realm realm;
+    private Alarm alarm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,29 +49,41 @@ public class EditAlarmActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_alarm);
 
         ButterKnife.bind(this);
+        realm = Realm.getInstance(getApplicationContext());
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ViewCompat.setElevation(toolbar, 10);
 
-        ActionBar actionBar = getSupportActionBar();
-
+        final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        Intent intent = getIntent();
-        hour = intent.getIntExtra("hour", 0);
-        minute = intent.getIntExtra("minute", 0);
+        final Intent intent = getIntent();
+        creatingAlarm = intent.getBooleanExtra("creatingAlarm", false);
         id = intent.getIntExtra("id", 0);
 
-        TextView timeView = (TextView) findViewById(R.id.text_alarm);
+        if (creatingAlarm) {
+            realm.beginTransaction();
+            alarm = realm.createObject(Alarm.class);
+            realm.commitTransaction();
 
-        checkSnooze.setChecked(snoozeEnabled);
+            hour = intent.getIntExtra("hour", 0);
+            minute = intent.getIntExtra("minute", 0);
 
-        //This Alarm is used for printing purposes only.
-        //Not persisted in any way.
-        timeView.setText(AlarmUtils.printAlarm(new Alarm(hour, minute)));
+            //This Alarm is used for printing purposes only.
+            //Not persisted in any way.
+            timeView.setText(AlarmUtils.printAlarm(new Alarm(hour, minute)));
+        } else {
+            restoreState();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
     }
 
     @Override
@@ -123,10 +140,9 @@ public class EditAlarmActivity extends AppCompatActivity {
             }
         }
 
-        Realm realm = Realm.getInstance(getApplicationContext());
+        realm = Realm.getInstance(getApplicationContext());
         realm.beginTransaction();
 
-        Alarm alarm = realm.createObject(Alarm.class);
         alarm.setHour(hour);
         alarm.setMinute(minute);
         alarm.setId(id);
@@ -140,7 +156,9 @@ public class EditAlarmActivity extends AppCompatActivity {
         realm.commitTransaction();
         realm.close();
 
-        AlarmUtils.setAlarm(alarm, getApplicationContext());
+        if (!creatingAlarm) {
+            AlarmUtils.setAlarm(alarm, getApplicationContext());
+        }
 
         finish();
     }
@@ -156,6 +174,31 @@ public class EditAlarmActivity extends AppCompatActivity {
 
             editSnoozeQuantity.setError(null);
             editSnoozeQuantity.clearFocus();
+        }
+    }
+
+    private void restoreState() {
+        alarm = realm.where(Alarm.class).equalTo("id", id).findFirst();
+
+        hour = alarm.getHour();
+        minute = alarm.getMinute();
+        snoozeEnabled = alarm.isSnoozeEnabled();
+
+        checkSnooze.setChecked(snoozeEnabled);
+        timeView.setText(AlarmUtils.printAlarm(alarm));
+
+        if (snoozeEnabled) {
+            editSnoozeDuration.setText(String.valueOf(alarm.getSnoozeDuration()));
+            editSnoozeQuantity.setText(String.valueOf(alarm.getSnoozeQuantity()));
+        }
+
+        final ViewGroup buttonContainer = (ViewGroup) findViewById(R.id.container_day);
+        byte[] days = alarm.getDays();
+        for (int idx = 0; idx < buttonContainer.getChildCount(); idx++) {
+            if (days[idx] == 1) {
+                ToggleButton toggleButton = (ToggleButton) buttonContainer.getChildAt(idx);
+                toggleButton.setChecked(true);
+            }
         }
     }
 

@@ -29,8 +29,6 @@ import lbaker.app.autosnooze.ui.fragment.TimePickerFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final int NEW_ALARM_REQUEST_CODE = 1;
-
     private Realm realm;
     private RecyclerAdapter recyclerAdapter;
 

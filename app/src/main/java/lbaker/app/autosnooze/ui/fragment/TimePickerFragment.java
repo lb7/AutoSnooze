@@ -45,7 +45,8 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
             Intent intent = new Intent(getActivity(), EditAlarmActivity.class);
             intent.putExtra("hour", hourOfDay)
                     .putExtra("minute", minute)
-                    .putExtra("id", AlarmUtils.generateId());
+                    .putExtra("id", AlarmUtils.generateId())
+                    .putExtra("creatingAlarm", true);
 
             getActivity().startActivity(intent);
         }
