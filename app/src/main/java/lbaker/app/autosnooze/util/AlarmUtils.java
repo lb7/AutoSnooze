@@ -28,6 +28,11 @@ import lbaker.app.autosnooze.alarm.SnoozeAlarm;
 import lbaker.app.autosnooze.background.NotificationService;
 import lbaker.app.autosnooze.ui.activity.AlarmActivity;
 import lbaker.app.autosnooze.ui.preference.NotificationIntervalPreference;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class AlarmUtils {
 
@@ -370,29 +375,56 @@ public class AlarmUtils {
         return new Random().nextInt();
     }
 
-    public static void log(String message) {
-        StringBuilder builder = new StringBuilder();
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    public static void log(final String message) {
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                StringBuilder builder = new StringBuilder();
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-        builder.append(timestamp).append(": ").append(message);
-        try {
-            File logDir = new File(Environment.getExternalStorageDirectory().getPath() +
-                    "/autosnooze");
-            if (!logDir.mkdirs()) {
-                Log.d(LOG_TAG, "Directory not created");
+                builder.append(timestamp).append(": ").append(message);
+                try {
+                    File logDir = new File(Environment.getExternalStorageDirectory().getPath() +
+                            "/autosnooze");
+                    if (!logDir.mkdirs()) {
+                        Log.d(LOG_TAG, "Directory not created");
+                    }
+
+                    File logFile = new File(logDir.getAbsolutePath() + "/log.txt");
+                    if (!logFile.createNewFile()) {
+                        Log.d(LOG_TAG, "File not created");
+                    }
+
+                    PrintStream logStream = new PrintStream(new FileOutputStream(logFile, true));
+                    logStream.println(builder.toString());
+
+                    logStream.close();
+                } catch (IOException e) {
+                    subscriber.onError(e);
+                } finally {
+                    subscriber.onCompleted();
+                    subscriber.unsubscribe();
+                }
+
             }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
 
-            File logFile = new File(logDir.getAbsolutePath() + "/log.txt");
-            if (!logFile.createNewFile()) {
-                Log.d(LOG_TAG, "File not created");
-            }
+                    }
 
-            PrintStream logStream = new PrintStream(new FileOutputStream(logFile, true));
-            logStream.println(builder.toString());
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
 
-            logStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                    @Override
+                    public void onNext(String s) {
+
+                    }
+                });
     }
 }
