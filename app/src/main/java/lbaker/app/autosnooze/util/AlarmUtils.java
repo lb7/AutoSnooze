@@ -7,9 +7,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -53,6 +60,8 @@ public class AlarmUtils {
         if (preferences.getBoolean("pref_key_notifications_enabled", true)) {
             scheduleNotification(alarmTime, alarm, context);
         }
+
+        log("Alarm set");
     }
 
     //Exact alarm setting is different on several versions of android.
@@ -91,6 +100,8 @@ public class AlarmUtils {
         if (alarm.isSnoozeEnabled()) {
             AlarmUtils.cancelSnoozeAlarms(alarm, context);
         }
+
+        log("Alarm canceled");
     }
 
     private static void createSnoozeAlarms(Alarm alarm, Context context) {
@@ -357,5 +368,31 @@ public class AlarmUtils {
     // TODO: 8/16/2015 Check id for uniqueness. May not be necessary.
     public static int generateId() {
         return new Random().nextInt();
+    }
+
+    public static void log(String message) {
+        StringBuilder builder = new StringBuilder();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+        builder.append(timestamp).append(": ").append(message);
+        try {
+            File logDir = new File(Environment.getExternalStorageDirectory().getPath() +
+                    "/autosnooze");
+            if (!logDir.mkdirs()) {
+                Log.d(LOG_TAG, "Directory not created");
+            }
+
+            File logFile = new File(logDir.getAbsolutePath() + "/log.txt");
+            if (!logFile.createNewFile()) {
+                Log.d(LOG_TAG, "File not created");
+            }
+
+            PrintStream logStream = new PrintStream(new FileOutputStream(logFile, true));
+            logStream.println(builder.toString());
+
+            logStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
