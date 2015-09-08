@@ -29,7 +29,6 @@ import lbaker.app.autosnooze.background.NotificationService;
 import lbaker.app.autosnooze.ui.activity.AlarmActivity;
 import lbaker.app.autosnooze.ui.preference.NotificationIntervalPreference;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -66,7 +65,7 @@ public class AlarmUtils {
             scheduleNotification(alarmTime, alarm, context);
         }
 
-        log("Alarm set");
+        //log("Alarm set");
     }
 
     //Exact alarm setting is different on several versions of android.
@@ -106,7 +105,7 @@ public class AlarmUtils {
             AlarmUtils.cancelSnoozeAlarms(alarm, context);
         }
 
-        log("Alarm canceled");
+        //log("Alarm canceled");
     }
 
     private static void createSnoozeAlarms(Alarm alarm, Context context) {
@@ -410,21 +409,9 @@ public class AlarmUtils {
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<String>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(String s) {
-
-                    }
-                });
+                .subscribe(
+                        s -> {},
+                        throwable -> throwable.printStackTrace()
+                );
     }
 }

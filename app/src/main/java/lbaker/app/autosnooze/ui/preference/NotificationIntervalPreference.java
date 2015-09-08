@@ -15,6 +15,7 @@ import lbaker.app.autosnooze.util.AlarmUtils;
 
 /**
  * Created by Luke on 8/5/2015.
+ *
  */
 public class NotificationIntervalPreference extends IntegerPreference {
 

@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,12 +61,14 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new AlarmListItemDecoration(getResources()));
         recyclerView.setAdapter(recyclerAdapter);
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        /*fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createTimePickerDialog();
             }
-        });
+        });*/
+
+        fab.setOnClickListener(view -> createTimePickerDialog());
     }
 
     @Override

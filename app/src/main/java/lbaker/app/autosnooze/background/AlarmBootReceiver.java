@@ -8,6 +8,8 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.util.AlarmUtils;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Luke on 5/13/2015.
@@ -15,17 +17,23 @@ import lbaker.app.autosnooze.util.AlarmUtils;
  */
 public class AlarmBootReceiver extends BroadcastReceiver {
     @Override
-    public void onReceive(Context context, Intent intent) {
-        Realm realm = Realm.getInstance(context);
+    public void onReceive(final Context context, Intent intent) {
 
-        RealmResults<Alarm> enabledAlarms = realm.where(Alarm.class)
-                .equalTo("isEnabled", true)
-                .findAll();
+        Observable
+                .create(subscriber -> {
+            Realm realm = Realm.getInstance(context);
 
-        for (Alarm alarm : enabledAlarms) {
-            AlarmUtils.setAlarm(alarm, context);
-        }
+            RealmResults<Alarm> enabledAlarms = realm.where(Alarm.class)
+                    .equalTo("isEnabled", true)
+                    .findAll();
 
-        realm.close();
+            for (Alarm alarm : enabledAlarms) {
+                AlarmUtils.setAlarm(alarm, context);
+            }
+
+            realm.close();
+        })
+                .subscribeOn(Schedulers.newThread())
+                .subscribe();
     }
 }

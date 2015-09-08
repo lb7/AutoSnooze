@@ -7,12 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,15 +56,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
         alarmVH.daysView.setText(AlarmUtils.printDays(alarm, context.getResources()));
 
         alarmVH.toggle.setChecked(alarm.isEnabled());
-
-        /*alarmVH.container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.expand);
-                set.setTarget(v);
-                set.start();
-            }
-        });*/
     }
 
     @Override
@@ -136,54 +124,46 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
             super(v);
             ButterKnife.bind(this, v);
 
-            toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (buttonView.isPressed()) {
-                        Alarm alarm = alarmList.get(getAdapterPosition());
+            toggle.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (buttonView.isPressed()) {
+                    Alarm alarm = alarmList.get(getAdapterPosition());
 
-                        realm.beginTransaction();
-                        alarm.setEnabled(isChecked);
-                        realm.commitTransaction();
+                    realm.beginTransaction();
+                    alarm.setEnabled(isChecked);
+                    realm.commitTransaction();
 
-                        if (isChecked) {
-                            AlarmUtils.setAlarm(alarm, context);
-                        } else {
-                            AlarmUtils.cancelAlarm(alarm, context);
-                            AlarmUtils.cancelNotification(alarm.getId(), context);
-                        }
+                    if (isChecked) {
+                        AlarmUtils.setAlarm(alarm, context);
+                    } else {
+                        AlarmUtils.cancelAlarm(alarm, context);
+                        AlarmUtils.cancelNotification(alarm.getId(), context);
                     }
                 }
             });
 
-            delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(@NotNull View v) {
-                    Alarm alarm = alarmList.get(getAdapterPosition());
-                    AlarmUtils.cancelAlarm(alarm, context);
-                    AlarmUtils.cancelNotification(alarm.getId(), context);
+            delete.setOnClickListener(view -> {
+                Alarm alarm = alarmList.get(getAdapterPosition());
+                AlarmUtils.cancelAlarm(alarm, context);
+                AlarmUtils.cancelNotification(alarm.getId(), context);
 
-                    realm.beginTransaction();
-                    alarm.removeFromRealm();
-                    realm.commitTransaction();
+                realm.beginTransaction();
+                alarm.removeFromRealm();
+                realm.commitTransaction();
 
-                    int idx = getAdapterPosition();
+                int idx = getAdapterPosition();
 
-                    alarmList.remove(idx);
-                    notifyItemRemoved(idx);
+                alarmList.remove(idx);
+                notifyItemRemoved(idx);
 
-                    Snackbar.make(v.getRootView().findViewById(R.id.coordinator), "Alarm deleted", Snackbar.LENGTH_LONG).show();
-                }
+                Snackbar.make(view.getRootView().findViewById(R.id.coordinator), "Alarm deleted",
+                        Snackbar.LENGTH_LONG).show();
             });
 
-            container.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, EditAlarmActivity.class)
-                            .putExtra("id", alarmList.get(getAdapterPosition()).getId())
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
-                }
+            container.setOnClickListener(view -> {
+                Intent intent = new Intent(context, EditAlarmActivity.class)
+                        .putExtra("id", alarmList.get(getAdapterPosition()).getId())
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
             });
         }
     }
