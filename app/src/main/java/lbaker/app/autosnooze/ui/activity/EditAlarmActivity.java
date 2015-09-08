@@ -1,5 +1,6 @@
 package lbaker.app.autosnooze.ui.activity;
 
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
 import butterknife.Bind;
@@ -21,12 +23,14 @@ import butterknife.OnClick;
 import io.realm.Realm;
 import lbaker.app.autosnooze.R;
 import lbaker.app.autosnooze.alarm.Alarm;
+import lbaker.app.autosnooze.ui.fragment.TimePickerFragment;
 import lbaker.app.autosnooze.util.AlarmUtils;
 
 // TODO: 8/25/2015 Add option to pick alert tone.
 
 
-public class EditAlarmActivity extends AppCompatActivity {
+public class EditAlarmActivity extends AppCompatActivity implements TimePickerDialog
+        .OnTimeSetListener {
 
     private int hour;
     private int minute;
@@ -74,7 +78,7 @@ public class EditAlarmActivity extends AppCompatActivity {
 
             //This Alarm is used for printing purposes only.
             //Not persisted in any way.
-            timeView.setText(AlarmUtils.printAlarm(new Alarm(hour, minute)));
+            setTimeViewText(new Alarm(hour, minute));
         } else {
             restoreState();
         }
@@ -157,10 +161,34 @@ public class EditAlarmActivity extends AppCompatActivity {
         realm.close();
 
         if (!creatingAlarm) {
-            AlarmUtils.setAlarm(alarm, getApplicationContext());
+            AlarmUtils.cancelAlarm(alarm, getApplicationContext());
         }
+        AlarmUtils.setAlarm(alarm, getApplicationContext());
 
         finish();
+    }
+
+    @OnClick(R.id.text_alarm)
+    void editTime() {
+        TimePickerFragment timePickerFragment = new TimePickerFragment();
+
+        Bundle args = new Bundle(3);
+        args.putBoolean("isEditing", true);
+        args.putInt("hour", hour);
+        args.putInt("minute", minute);
+
+        timePickerFragment.setArguments(args);
+        timePickerFragment.show(getSupportFragmentManager(), "timePicker");
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        if (view.isShown()) {
+            this.hour = hourOfDay;
+            this.minute = minute;
+
+            setTimeViewText(new Alarm(this.hour, this.minute));
+        }
     }
 
     @OnCheckedChanged(R.id.check_snooze)
@@ -177,6 +205,10 @@ public class EditAlarmActivity extends AppCompatActivity {
         }
     }
 
+    private void setTimeViewText(Alarm alarm) {
+        timeView.setText(AlarmUtils.printAlarm(alarm));
+    }
+
     private void restoreState() {
         alarm = realm.where(Alarm.class).equalTo("id", id).findFirst();
 
@@ -185,7 +217,7 @@ public class EditAlarmActivity extends AppCompatActivity {
         snoozeEnabled = alarm.isSnoozeEnabled();
 
         checkSnooze.setChecked(snoozeEnabled);
-        timeView.setText(AlarmUtils.printAlarm(alarm));
+        setTimeViewText(alarm);
 
         if (snoozeEnabled) {
             editSnoozeDuration.setText(String.valueOf(alarm.getSnoozeDuration()));
@@ -201,5 +233,6 @@ public class EditAlarmActivity extends AppCompatActivity {
             }
         }
     }
+
 
 }

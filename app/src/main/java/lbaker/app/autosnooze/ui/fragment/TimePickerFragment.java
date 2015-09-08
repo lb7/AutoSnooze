@@ -22,17 +22,33 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     @Override @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
+        int hour;
+        int minute;
+
+        Bundle args = getArguments();
+
+        TimePickerDialog.OnTimeSetListener onTimeSetListener = null;
+        if (args != null) {
+            if (args.getBoolean("isEditing")) {
+                onTimeSetListener = (TimePickerDialog.OnTimeSetListener) getActivity();
+            }
+            hour = args.getInt("hour");
+            minute = args.getInt("minute");
+        } else {
+            onTimeSetListener = this;
+            hour = calendar.get(Calendar.HOUR_OF_DAY);
+            minute = calendar.get(Calendar.MINUTE);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return new TimePickerDialog(getActivity(), R.style.AppTheme_TimePicker, this, hour,
-                    minute, false);
+            return new TimePickerDialog(getActivity(), R.style.AppTheme_TimePicker,
+                    onTimeSetListener, hour, minute, false);
         } else {
             ContextThemeWrapper themeWrapper = new ContextThemeWrapper(getActivity(),
                     R.style.AppTheme_TimePicker_Compat);
-            return new TimePickerDialog(themeWrapper, this, hour, minute, false);
+            return new TimePickerDialog(themeWrapper, onTimeSetListener, hour, minute, false);
         }
+
     }
 
     // Called twice on some versions of Android. Once when the "confirm" button is pushed and once
