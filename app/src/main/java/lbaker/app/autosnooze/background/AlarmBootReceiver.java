@@ -19,8 +19,7 @@ public class AlarmBootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent intent) {
 
-        Observable
-                .create(subscriber -> {
+        Observable.create(subscriber -> {
             Realm realm = Realm.getInstance(context);
 
             RealmResults<Alarm> enabledAlarms = realm.where(Alarm.class)
