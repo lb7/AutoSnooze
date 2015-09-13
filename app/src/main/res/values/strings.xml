@@ -31,7 +31,7 @@
     <string name="pref_alarm_title">Alarms</string>
     <string name="pref_ringtone_title">Alarm tone</string>
     <string name="pref_ringtone_summary">Choose your ringtone</string>
-    <string name="pref_ringtone_key">pref_ringtone_key</string>
+    <string name="pref_key_ringtone">pref_ringtone_key</string>
 
     <!--Constants used when printing the days an alarm will fire-->
     <string name="day_sun">Sun</string>

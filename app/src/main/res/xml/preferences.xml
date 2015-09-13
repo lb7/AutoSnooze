@@ -10,7 +10,7 @@
         <RingtonePreference
             android:title="@string/pref_ringtone_title"
             android:summary="@string/pref_ringtone_summary"
-            android:key="@string/pref_ringtone_key"
+            android:key="@string/pref_key_ringtone"
             android:ringtoneType="alarm"
             android:showDefault="true"
             />

@@ -1,5 +1,6 @@
 package lbaker.app.autosnooze.ui.activity;
 
+import android.content.SharedPreferences;
 import android.media.AudioAttributes;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -8,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -36,12 +38,18 @@ public class AlarmActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences
+                (getApplicationContext());
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
                 | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
                 | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        Uri alarmURI = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        String uriString = preferences.getString(getString(R.string.pref_key_ringtone),
+                RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString());
+        Uri alarmURI = Uri.parse(uriString);
+
         ringtone = RingtoneManager.getRingtone(getApplicationContext(), alarmURI);
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
