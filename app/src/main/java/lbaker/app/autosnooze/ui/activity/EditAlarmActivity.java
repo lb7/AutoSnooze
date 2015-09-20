@@ -69,9 +69,7 @@ public class EditAlarmActivity extends AppCompatActivity implements TimePickerDi
         id = intent.getIntExtra("id", 0);
 
         if (creatingAlarm) {
-            realm.beginTransaction();
-            alarm = realm.createObject(Alarm.class);
-            realm.commitTransaction();
+            alarm = new Alarm();
 
             hour = intent.getIntExtra("hour", 0);
             minute = intent.getIntExtra("minute", 0);
@@ -85,9 +83,14 @@ public class EditAlarmActivity extends AppCompatActivity implements TimePickerDi
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        realm.close();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        realm.close();
     }
 
     @Override
@@ -144,7 +147,6 @@ public class EditAlarmActivity extends AppCompatActivity implements TimePickerDi
             }
         }
 
-        realm = Realm.getInstance(getApplicationContext());
         realm.beginTransaction();
 
         alarm.setHour(hour);
@@ -157,8 +159,9 @@ public class EditAlarmActivity extends AppCompatActivity implements TimePickerDi
         alarm.setSnoozeEnabled(snoozeEnabled);
         alarm.setEnabled(true);
 
+        realm.copyToRealm(alarm);
         realm.commitTransaction();
-        realm.close();
+
 
         if (!creatingAlarm) {
             AlarmUtils.cancelAlarm(alarm, getApplicationContext());
