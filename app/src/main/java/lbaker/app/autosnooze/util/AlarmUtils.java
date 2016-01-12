@@ -63,8 +63,6 @@ public class AlarmUtils {
         if (preferences.getBoolean("pref_key_notifications_enabled", true)) {
             scheduleNotification(alarmTime, alarm, context);
         }
-
-        log("Alarm set");
     }
 
     //Exact alarm setting is different on several versions of android.
@@ -103,8 +101,6 @@ public class AlarmUtils {
         if (alarm.isSnoozeEnabled()) {
             AlarmUtils.cancelSnoozeAlarms(alarm, context);
         }
-
-        //log("Alarm canceled");
     }
 
     private static void createSnoozeAlarms(Alarm alarm, Context context) {

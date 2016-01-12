@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import io.realm.Realm;
+import io.realm.RealmList;
 import lbaker.app.autosnooze.R;
 import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.ui.fragment.TimePickerFragment;
@@ -157,6 +158,7 @@ public class EditAlarmActivity extends AppCompatActivity implements TimePickerDi
         alarm.setSnoozeDuration(snoozeDuration);
         alarm.setSnoozeQuantity(snoozeQuantity);
         alarm.setSnoozeEnabled(snoozeEnabled);
+        alarm.setSnoozeAlarms(new RealmList<>());
         alarm.setEnabled(true);
 
         realm.copyToRealm(alarm);
