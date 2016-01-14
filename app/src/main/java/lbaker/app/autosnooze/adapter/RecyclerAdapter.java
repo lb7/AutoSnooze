@@ -19,6 +19,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import lbaker.app.autosnooze.R;
 import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.ui.activity.EditAlarmActivity;
@@ -72,7 +73,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
     }
 
     public void refresh() {
-        RealmResults<Alarm> results = realm.allObjectsSorted(Alarm.class, "hour", true, "minute", true);
+        RealmResults<Alarm> results = realm.allObjectsSorted(Alarm.class, "hour", Sort.ASCENDING, "minute",
+                Sort.ASCENDING);
 
         alarmList = new ArrayList<>(results);
         notifyDataSetChanged();
