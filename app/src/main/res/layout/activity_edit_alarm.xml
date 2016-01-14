@@ -10,7 +10,7 @@
     <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/toolbar" />
+        layout="@layout/toolbar"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -26,7 +26,9 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/text_alarm"
                 android:textSize="40sp"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:text="12:00"
+                android:background="?attr/selectableItemBackground"/>
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -92,6 +94,33 @@
                     android:layout_weight="1" />
             </LinearLayout>
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/abc_action_button_min_height_material"
+                android:clickable="true"
+                android:background="?attr/selectableItemBackground"
+                android:id="@+id/button_edit_ringtone"
+                >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView"
+                    android:src="@drawable/ic_ringtone"
+                    android:alpha="@integer/alpha_icon_active"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ringtone_label"
+                    android:id="@+id/text_ringtone"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="14sp"
+                    />
+            </LinearLayout>
+
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -121,14 +150,16 @@
                     android:inputType="number"
                     android:id="@+id/text_snooze_quantity"
                     android:hint="@string/hint_snooze_quantity"
-                    android:enabled="false" />
+                    android:enabled="false"
+                    />
             </android.support.design.widget.TextInputLayout>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Save Changes"
-                android:id="@+id/button_save" />
+                android:id="@+id/button_save"
+                />
 
         </LinearLayout>
     </ScrollView>

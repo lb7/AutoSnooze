@@ -10,6 +10,8 @@
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
+        <item name="selectableItemBackground">?android:selectableItemBackground</item>
     </style>
 
     <style name="AppTheme.TimePicker" parent="Theme.AppCompat.Light.Dialog">
