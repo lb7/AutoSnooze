@@ -29,6 +29,8 @@ public class AlarmActivity extends AppCompatActivity {
 
     private Ringtone ringtone;
     private Vibrator vibrator;
+    private Realm realm;
+    private Alarm alarm;
     //private AudioManager audioManager;
 
     //private int originalVolume;
@@ -38,6 +40,15 @@ public class AlarmActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
 
+        int id = getIntent().getIntExtra("id", 0);
+
+        realm = Realm.getInstance(getApplicationContext());
+        RealmResults<Alarm> realmResults = realm.where(Alarm.class)
+                .equalTo("id", id)
+                .findAll();
+
+        alarm = realmResults.first();
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences
                 (getApplicationContext());
 
@@ -46,8 +57,13 @@ public class AlarmActivity extends AppCompatActivity {
                 | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
                 | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        String uriString = preferences.getString(getString(R.string.pref_key_ringtone),
-                RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString());
+        String uriString;
+        if (alarm.getAlarmURI().length() != 0) {
+            uriString = alarm.getAlarmURI();
+        } else {
+            uriString = preferences.getString(getString(R.string.pref_key_ringtone),
+                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM).toString());
+        }
         Uri alarmURI = Uri.parse(uriString);
 
         ringtone = RingtoneManager.getRingtone(getApplicationContext(), alarmURI);
@@ -90,17 +106,9 @@ public class AlarmActivity extends AppCompatActivity {
 
         //The resetting of the alarm needs to be done in onDestroy to get around
         //onPause and onStop being called twice when the screen is locked.
-        int id = getIntent().getIntExtra("id", 0);
-
-        Realm realm = Realm.getInstance(getApplicationContext());
-        RealmResults<Alarm> realmResults = realm.where(Alarm.class)
-                .equalTo("id", id)
-                .findAll();
 
         //this alarm is a regular alarm and should be acted on. Snooze alarms require no action.
         //At least as of now.
-        if (!realmResults.isEmpty()) {
-            Alarm alarm = realmResults.first();
 
             if (alarm.isRepeating()) {
                 AlarmUtils.setAlarm(alarm, getApplicationContext());
@@ -113,7 +121,7 @@ public class AlarmActivity extends AppCompatActivity {
             NotificationManagerCompat notificationManager =
                     NotificationManagerCompat.from(getApplicationContext());
             notificationManager.cancel(alarm.getId());
-        }
+
 
         realm.close();
         ringtone.stop();

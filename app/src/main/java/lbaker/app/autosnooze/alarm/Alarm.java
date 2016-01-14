@@ -9,6 +9,8 @@ import io.realm.RealmObject;
  */
 public class Alarm extends RealmObject {
 
+    public static String NULL_STRING = "AUTOSNOOZE_NULL_STRING";
+
     private int hour;
     private int minute;
     private int id;
@@ -20,6 +22,8 @@ public class Alarm extends RealmObject {
     private boolean snoozeEnabled;
 
     private byte[] days;
+
+    private String alarmURI;
 
     private RealmList<SnoozeAlarm> snoozeAlarms;
 
@@ -111,5 +115,13 @@ public class Alarm extends RealmObject {
 
     public void setSnoozeAlarms(RealmList<SnoozeAlarm> snoozeAlarms) {
         this.snoozeAlarms = snoozeAlarms;
+    }
+
+    public String getAlarmURI() {
+        return alarmURI;
+    }
+
+    public void setAlarmURI(String alarmURI) {
+        this.alarmURI = alarmURI;
     }
 }
