@@ -46,6 +46,7 @@ public class EditAlarmActivity extends AppCompatActivity implements TimePickerDi
 
     private String alarmUriString;
 
+    @Bind(R.id.text_ringtone)        TextView ringtoneView;
     @Bind(R.id.text_alarm)           TextView timeView;
     @Bind(R.id.text_snooze_duration) EditText editSnoozeDuration;
     @Bind(R.id.text_snooze_quantity) EditText editSnoozeQuantity;
@@ -82,7 +83,7 @@ public class EditAlarmActivity extends AppCompatActivity implements TimePickerDi
 
             hour = intent.getIntExtra("hour", 0);
             minute = intent.getIntExtra("minute", 0);
-            alarmUriString = "";
+            alarmUriString = Settings.System.DEFAULT_ALARM_ALERT_URI.toString();
 
             //This Alarm is used for printing purposes only.
             //Not persisted in any way.
@@ -91,7 +92,7 @@ public class EditAlarmActivity extends AppCompatActivity implements TimePickerDi
             restoreState();
         }
 
-        findViewById(R.id.button_edit_ringtone).setOnClickListener(v -> editRingtone());
+        ringtoneView.setText(parseRingtoneTitle(alarmUriString));
     }
 
     @Override
@@ -216,8 +217,10 @@ public class EditAlarmActivity extends AppCompatActivity implements TimePickerDi
                 if (uri != null) {
                     alarmUriString = uri.toString();
                 } else {
-                    alarmUriString = null;
+                    alarmUriString = Alarm.NULL_STRING;
                 }
+
+                ringtoneView.setText(parseRingtoneTitle(alarmUriString));
             }
         }
     }
@@ -266,7 +269,8 @@ public class EditAlarmActivity extends AppCompatActivity implements TimePickerDi
         }
     }
 
-    private void editRingtone() {
+    @OnClick(R.id.button_edit_ringtone)
+    void editRingtone() {
         Uri uri;
         if (alarmUriString.length() == 0) {
             uri = Settings.System.DEFAULT_ALARM_ALERT_URI;
@@ -280,5 +284,13 @@ public class EditAlarmActivity extends AppCompatActivity implements TimePickerDi
                 .putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM)
                 .putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, uri);
         startActivityForResult(intent, RINGTONE_REQUEST_CODE);
+    }
+
+    private String parseRingtoneTitle(String uriString) {
+        if (uriString == null || uriString.equals(Alarm.NULL_STRING)) {
+            return "Silent";
+        }
+        return RingtoneManager.getRingtone(getApplicationContext(), Uri.parse(uriString)).getTitle
+                (getApplicationContext());
     }
 }
