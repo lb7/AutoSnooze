@@ -2,6 +2,7 @@ package lbaker.app.autosnooze.ui.activity;
 
 import android.content.SharedPreferences;
 import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -31,14 +32,13 @@ public class AlarmActivity extends AppCompatActivity {
     private Vibrator vibrator;
     private Realm realm;
     private Alarm alarm;
-    //private AudioManager audioManager;
-
-    //private int originalVolume;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
+
+        setVolumeControlStream(AudioManager.STREAM_ALARM);
 
         int id = getIntent().getIntExtra("id", 0);
 

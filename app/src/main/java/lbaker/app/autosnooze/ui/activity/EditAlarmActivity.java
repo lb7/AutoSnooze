@@ -2,6 +2,7 @@ package lbaker.app.autosnooze.ui.activity;
 
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -61,6 +62,8 @@ public class EditAlarmActivity extends AppCompatActivity implements TimePickerDi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_alarm);
+
+        setVolumeControlStream(AudioManager.STREAM_ALARM);
 
         ButterKnife.bind(this);
         realm = Realm.getInstance(getApplicationContext());
