@@ -27,6 +27,7 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import lbaker.app.autosnooze.R;
 import lbaker.app.autosnooze.alarm.Alarm;
+import lbaker.app.autosnooze.alarm.SnoozeAlarm;
 import lbaker.app.autosnooze.ui.fragment.TimePickerFragment;
 import lbaker.app.autosnooze.util.AlarmUtils;
 
@@ -71,6 +72,7 @@ public class EditAlarmActivity extends AppCompatActivity implements TimePickerDi
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_close);
         }
 
         final Intent intent = getIntent();
@@ -108,7 +110,7 @@ public class EditAlarmActivity extends AppCompatActivity implements TimePickerDi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_new_alarm, menu);
+        //getMenuInflater().inflate(R.menu.menu_new_alarm, menu);
         return true;
     }
 
@@ -174,7 +176,7 @@ public class EditAlarmActivity extends AppCompatActivity implements TimePickerDi
         } else {
             alarm.setAlarmURI(alarmUriString);
         }
-        alarm.setSnoozeAlarms(new RealmList<>());
+        alarm.setSnoozeAlarms(new RealmList<SnoozeAlarm>());
         alarm.setEnabled(true);
 
         realm.copyToRealm(alarm);
