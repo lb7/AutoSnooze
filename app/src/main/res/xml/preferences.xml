@@ -15,8 +15,11 @@
             android:showDefault="true"
             />
         <SwitchPreference
-            android:title="@string/pref_alarm_vibrate"
+            android:title="@string/pref_vibrate"
             android:key="@string/pref_key_vibrate"
+            android:summaryOn="@string/pref_vibrate_summary_on"
+            android:summaryOff="@string/pref_vibrate_summary_off"
+            android:defaultValue="true"
             />
     </PreferenceCategory>
     <PreferenceCategory
