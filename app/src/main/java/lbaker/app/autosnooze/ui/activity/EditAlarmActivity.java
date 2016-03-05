@@ -32,9 +32,6 @@ import lbaker.app.autosnooze.alarm.SnoozeAlarm;
 import lbaker.app.autosnooze.ui.fragment.TimePickerFragment;
 import lbaker.app.autosnooze.util.AlarmUtils;
 
-// TODO: 8/25/2015 Add option to pick alert tone.
-
-
 public class EditAlarmActivity extends AppCompatActivity implements TimePickerDialog
         .OnTimeSetListener {
 
