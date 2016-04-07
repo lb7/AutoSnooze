@@ -19,7 +19,7 @@ import lbaker.app.autosnooze.util.AlarmUtils;
  */
 public class NotificationIntervalPreference extends IntegerPreference {
 
-    public static final int DEFAULT_VALUE = 15;
+    public static final int DEFAULT_VALUE = 60;
 
     private int prevVal;
 
