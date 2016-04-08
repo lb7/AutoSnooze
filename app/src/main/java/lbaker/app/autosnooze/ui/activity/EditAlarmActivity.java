@@ -25,6 +25,7 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import lbaker.app.autosnooze.R;
 import lbaker.app.autosnooze.alarm.Alarm;
@@ -63,7 +64,9 @@ public class EditAlarmActivity extends AppCompatActivity implements TimePickerDi
         setVolumeControlStream(AudioManager.STREAM_ALARM);
 
         ButterKnife.bind(this);
-        realm = Realm.getInstance(getApplicationContext());
+
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(getApplicationContext()).build();
+        realm = Realm.getInstance(realmConfig);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

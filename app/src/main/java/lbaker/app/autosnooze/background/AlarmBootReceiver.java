@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.util.AlarmUtils;
@@ -20,7 +21,8 @@ public class AlarmBootReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, Intent intent) {
 
         Observable.create(subscriber -> {
-            Realm realm = Realm.getInstance(context);
+            RealmConfiguration realmConfig = new RealmConfiguration.Builder(context).build();
+            Realm realm = Realm.getInstance(realmConfig);
 
             RealmResults<Alarm> enabledAlarms = realm.where(Alarm.class)
                     .equalTo("isEnabled", true)

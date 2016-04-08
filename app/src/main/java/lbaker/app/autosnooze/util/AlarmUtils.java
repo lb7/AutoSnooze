@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Random;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import lbaker.app.autosnooze.R;
 import lbaker.app.autosnooze.alarm.Alarm;
@@ -104,7 +105,8 @@ public class AlarmUtils {
     }
 
     private static void createSnoozeAlarms(Alarm alarm, Context context) {
-        Realm realm = Realm.getInstance(context);
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(context).build();
+        Realm realm = Realm.getInstance(realmConfig);
 
         Calendar alarmTime = Calendar.getInstance();
         alarmTime.set(Calendar.HOUR_OF_DAY, alarm.getHour());

@@ -11,6 +11,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import org.jetbrains.annotations.NotNull;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import lbaker.app.autosnooze.R;
 import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.ui.activity.MainActivity;
@@ -31,7 +32,9 @@ public class NotificationService extends Service {
     public int onStartCommand(@NotNull Intent intent, int flags, int startId) {
         int id = intent.getIntExtra("id", 0);
 
-        Realm realm = Realm.getInstance(getApplicationContext());
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(getApplicationContext()).build();
+        Realm realm = Realm.getInstance(realmConfig);
+
         Alarm alarm = realm.where(Alarm.class)
                 .equalTo("id", id)
                 .findFirst();

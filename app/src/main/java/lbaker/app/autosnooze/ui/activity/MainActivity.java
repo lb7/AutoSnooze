@@ -19,6 +19,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import lbaker.app.autosnooze.R;
@@ -55,7 +56,9 @@ public class MainActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
 
-        realm = Realm.getInstance(this);
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(getApplicationContext()).build();
+        realm = Realm.getInstance(realmConfig);
+
         RealmResults<Alarm> results = realm.allObjectsSorted(Alarm.class, "hour", Sort.ASCENDING, "minute",
                 Sort.ASCENDING);
 

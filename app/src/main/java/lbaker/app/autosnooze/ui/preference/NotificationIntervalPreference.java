@@ -8,6 +8,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.util.AttributeSet;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.background.NotificationService;
@@ -54,7 +55,9 @@ public class NotificationIntervalPreference extends IntegerPreference {
     private void rescheduleNotifications() {
         Context context = getContext().getApplicationContext();
 
-        Realm realm = Realm.getInstance(context);
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(context).build();
+        Realm realm = Realm.getInstance(realmConfig);
+
         RealmResults<Alarm> alarms = realm.where(Alarm.class)
                 .equalTo("isEnabled", true)
                 .findAll();

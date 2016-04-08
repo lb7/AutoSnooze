@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import lbaker.app.autosnooze.R;
 import lbaker.app.autosnooze.alarm.Alarm;
@@ -42,7 +43,9 @@ public class AlarmActivity extends AppCompatActivity {
 
         int id = getIntent().getIntExtra("id", 0);
 
-        realm = Realm.getInstance(getApplicationContext());
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(getApplicationContext()).build();
+        realm = Realm.getInstance(realmConfig);
+
         RealmResults<Alarm> realmResults = realm.where(Alarm.class)
                 .equalTo("id", id)
                 .findAll();

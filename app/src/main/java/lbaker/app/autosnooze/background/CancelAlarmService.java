@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import lbaker.app.autosnooze.alarm.Alarm;
 import lbaker.app.autosnooze.util.AlarmUtils;
 
@@ -30,7 +31,9 @@ public class CancelAlarmService extends Service {
                 NotificationManagerCompat.from(getApplicationContext());
         notificationManager.cancel(id);
 
-        Realm realm = Realm.getInstance(getApplicationContext());
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(getApplicationContext()).build();
+        Realm realm = Realm.getInstance(realmConfig);
+
         Alarm alarm = realm.where(Alarm.class)
                 .equalTo("id", id)
                 .findFirst();
