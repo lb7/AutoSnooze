@@ -108,6 +108,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.AlarmV
             alarm.setHour(hour);
             alarm.setMinute(minute);
             alarm.setEnabled(false);
+            alarm.setDays(new byte[7]);
 
             realm.commitTransaction();
             addItem(alarm);
